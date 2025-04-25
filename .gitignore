@@ -25,10 +25,11 @@ bin/
 
 # IDE files
 .idea/
-.vscode/
 *.swp
 *.swo
 
 # OS files
 .DS_Store
 Thumbs.db
+config.bat
+node_modules
