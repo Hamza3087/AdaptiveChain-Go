@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Advanced Blockchain</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --success-color: #38b000;
+            --warning-color: #ffbe0b;
+            --danger-color: #ff006e;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            margin-left: 10px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a75e6;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Page Content */
+        .page-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-label {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background-color: white;
+        }
+
+        /* Transactions Table */
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transactions-table th, .transactions-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transactions-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .transactions-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .hash-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: monospace;
+        }
+
+        .address-cell {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: monospace;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background-color: rgba(255, 190, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-failed {
+            background-color: rgba(255, 0, 110, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pagination-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination-item:hover {
+            background-color: #f0f7ff;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .pagination-item.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Transaction Details */
+        .transaction-details {
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 30px;
+        }
+
+        .transaction-details-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .detail-card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            width: 200px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .monospace {
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        /* Transaction Flow */
+        .transaction-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .address-box {
+            width: 40%;
+            padding: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .address-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .address-value {
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .flow-arrow {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        /* Transaction Data */
+        .transaction-data {
+            margin-top: 20px;
+        }
+
+        .data-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .data-content {
+            padding: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .transaction-flow {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .address-box {
+                width: 100%;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">⛓️</span>
+                    <h1>Advanced Blockchain</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, Admin</span>
+                    <button class="btn btn-primary">Refresh Data</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="index.html"><i>📊</i> Dashboard</a></li>
+                    <li><a href="blocks.html"><i>📦</i> Blocks</a></li>
+                    <li><a href="transactions.html" class="active"><i>💸</i> Transactions</a></li>
+                    <li><a href="nodes.html"><i>👥</i> Nodes</a></li>
+                    <li><a href="amf.html"><i>🌳</i> AMF</a></li>
+                </ul>
+            </div>
+
+            <div class="page-content">
+                <h2 class="page-title"><i>💸</i> Transactions Explorer</h2>
+
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search by transaction hash, address, or block number">
+                    <button class="search-btn">Search</button>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Show:</span>
+                        <select class="filter-select">
+                            <option>All Transactions</option>
+                            <option>Last 24 hours</option>
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Status:</span>
+                        <select class="filter-select">
+                            <option>All Statuses</option>
+                            <option>Confirmed</option>
+                            <option>Pending</option>
+                            <option>Failed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Shard:</span>
+                        <select class="filter-select">
+                            <option>All Shards</option>
+                            <option>Shard 1</option>
+                            <option>Shard 2</option>
+                            <option>Shard 3</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Items per page:</span>
+                        <select class="filter-select">
+                            <option>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <button id="process-pending-btn" class="btn btn-primary" style="background-color: var(--success-color);">Process All Pending Transactions</button>
+                </div>
+
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction Hash</th>
+                            <th>Block</th>
+                            <th>Age</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="hash-cell">0x8a7d953a2bd9c3b4d5d9c6a21f4f5c7b9e8d7f6a</td>
+                            <td>12,345</td>
+                            <td>2 mins ago</td>
+                            <td class="address-cell">0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</td>
+                            <td class="address-cell">0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b</td>
+                            <td class="transaction-amount">1.25 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</td>
+                            <td>12,345</td>
+                            <td>3 mins ago</td>
+                            <td class="address-cell">0x5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e</td>
+                            <td class="address-cell">0x4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c</td>
+                            <td class="transaction-amount">0.75 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b</td>
+                            <td>12,345</td>
+                            <td>5 mins ago</td>
+                            <td class="address-cell">0x3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4</td>
+                            <td class="address-cell">0x2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3</td>
+                            <td class="transaction-amount">2.50 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e</td>
+                            <td>12,345</td>
+                            <td>7 mins ago</td>
+                            <td class="address-cell">0x1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2</td>
+                            <td class="address-cell">0x0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a291</td>
+                            <td class="transaction-amount">0.33 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c</td>
+                            <td>12,345</td>
+                            <td>9 mins ago</td>
+                            <td class="address-cell">0xe9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d</td>
+                            <td class="address-cell">0xd8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c</td>
+                            <td class="transaction-amount">1.05 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4</td>
+                            <td>12,344</td>
+                            <td>12 mins ago</td>
+                            <td class="address-cell">0xc7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b</td>
+                            <td class="address-cell">0xb6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a</td>
+                            <td class="transaction-amount">0.88 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3</td>
+                            <td>12,344</td>
+                            <td>15 mins ago</td>
+                            <td class="address-cell">0xa5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f</td>
+                            <td class="address-cell">0x9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0</td>
+                            <td class="transaction-amount">1.75 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2</td>
+                            <td>Pending</td>
+                            <td>Just now</td>
+                            <td class="address-cell">0x8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9</td>
+                            <td class="address-cell">0x7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8</td>
+                            <td class="transaction-amount">0.45 ETH</td>
+                            <td><span class="status status-pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0x0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a291</td>
+                            <td>12,343</td>
+                            <td>18 mins ago</td>
+                            <td class="address-cell">0x6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7</td>
+                            <td class="address-cell">0x5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6</td>
+                            <td class="transaction-amount">3.20 ETH</td>
+                            <td><span class="status status-failed">Failed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="hash-cell">0xe9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d</td>
+                            <td>12,343</td>
+                            <td>20 mins ago</td>
+                            <td class="address-cell">0x4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5</td>
+                            <td class="address-cell">0x3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4</td>
+                            <td class="transaction-amount">0.65 ETH</td>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="pagination-item">«</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">5</div>
+                    <div class="pagination-item">»</div>
+                </div>
+
+                <div class="transaction-details">
+                    <h3 class="transaction-details-title">Transaction Details</h3>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Transaction Hash</div>
+                            <div class="detail-value monospace">0x8a7d953a2bd9c3b4d5d9c6a21f4f5c7b9e8d7f6a</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value"><span class="status status-confirmed">Confirmed</span></div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Block</div>
+                            <div class="detail-value">12,345</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">2023-06-15 10:35:07 UTC (2 mins ago)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Shard ID</div>
+                            <div class="detail-value">1</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Gas Used</div>
+                            <div class="detail-value">21,000</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Gas Price</div>
+                            <div class="detail-value">20 Gwei</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Transaction Fee</div>
+                            <div class="detail-value">0.00042 ETH</div>
+                        </div>
+                    </div>
+
+                    <div class="transaction-flow">
+                        <div class="address-box">
+                            <div class="address-label">From</div>
+                            <div class="address-value">0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="address-box">
+                            <div class="address-label">To</div>
+                            <div class="address-value">0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Value</div>
+                            <div class="detail-value">1.25 ETH</div>
+                        </div>
+                        <div class="transaction-data">
+                            <div class="data-title">Transaction Data</div>
+                            <div class="data-content">0x095ea7b30000000000000000000000007b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c000000000000000000000000000000000000000000000000000000000000012c</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Signature</div>
+                            <div class="detail-value monospace">r: 0x8a7d953a2bd9c3b4d5d9c6a21f4f5c7b9e8d7f6a5b4c3d2e1f0a9b8c7d6e5f4a<br>s: 0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6<br>v: 28</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Load blockchain service first -->
+    <script src="js/blockchain-service.js"></script>
+    <!-- Then load API which depends on blockchain service -->
+    <script src="js/api.js"></script>
+    <!-- Load utility scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/responsive.js"></script>
+
+    <!-- Initialize blockchain service as early as possible -->
+    <script>
+        // Ensure blockchain service is initialized
+        if (typeof BlockchainService !== 'undefined' && !BlockchainService.initialized) {
+            console.log('Early initialization of BlockchainService');
+            BlockchainService.initialize();
+        }
+    </script>
+    <script>
+        // Global state
+        const state = {
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 10,
+            filters: {},
+            selectedTransaction: null,
+            transactions: []
+        };
+
+        // Load state from localStorage if available
+        function loadStateFromStorage() {
+            try {
+                const savedState = localStorage.getItem('transactionsState');
+                if (savedState) {
+                    const parsedState = JSON.parse(savedState);
+
+                    // Update state with saved values
+                    state.currentPage = parsedState.currentPage || 1;
+                    state.totalPages = parsedState.totalPages || 1;
+                    state.pageSize = parsedState.pageSize || 10;
+                    state.filters = parsedState.filters || {};
+
+                    // Only use cached transactions if BlockchainService doesn't have any
+                    if (BlockchainService.blockchain.transactions.length === 0 && parsedState.transactions && parsedState.transactions.length > 0) {
+                        console.log('Using cached transactions from localStorage');
+                        state.transactions = parsedState.transactions;
+
+                        // Sync with BlockchainService
+                        syncTransactionsWithBlockchainService(parsedState.transactions);
+                    } else {
+                        // Get transactions from BlockchainService
+                        console.log('Using transactions from BlockchainService');
+                        const response = BlockchainService.getTransactions(state.currentPage, state.pageSize, state.filters);
+                        state.transactions = response.transactions;
+                        state.totalPages = response.totalPages;
+                    }
+
+                    console.log('Loaded transactions state from localStorage');
+                }
+            } catch (error) {
+                console.error('Error loading state from localStorage:', error);
+            }
+        }
+
+        // Save state to localStorage
+        function saveStateToStorage() {
+            try {
+                // Always get the latest transactions from BlockchainService
+                const response = BlockchainService.getTransactions(state.currentPage, state.pageSize, state.filters);
+                state.transactions = response.transactions;
+                state.totalPages = response.totalPages;
+
+                // Create a copy of the state to save
+                const stateToSave = {
+                    currentPage: state.currentPage,
+                    totalPages: state.totalPages,
+                    pageSize: state.pageSize,
+                    filters: state.filters,
+                    transactions: state.transactions
+                };
+
+                localStorage.setItem('transactionsState', JSON.stringify(stateToSave));
+                console.log('Saved transactions state to localStorage with', state.transactions.length, 'transactions');
+            } catch (error) {
+                console.error('Error saving state to localStorage:', error);
+            }
+        }
+
+        // Sync cached transactions with BlockchainService
+        function syncTransactionsWithBlockchainService(cachedTransactions) {
+            if (!cachedTransactions || cachedTransactions.length === 0) {
+                return;
+            }
+
+            console.log('Syncing cached transactions with BlockchainService');
+
+            // Only add transactions that don't already exist in BlockchainService
+            const existingHashes = new Set(BlockchainService.blockchain.transactions.map(tx => tx.hash));
+
+            cachedTransactions.forEach(tx => {
+                if (!existingHashes.has(tx.hash)) {
+                    BlockchainService.blockchain.transactions.push(tx);
+                    BlockchainService.stats.transactions++;
+                    console.log('Added cached transaction to BlockchainService:', tx.hash);
+                }
+            });
+        }
+
+        // Load transactions data
+        async function loadTransactions(forceRefresh = false) {
+            try {
+                // Show loading state
+                const tableBody = document.querySelector('.transactions-table tbody');
+                Utils.showLoading(tableBody);
+
+                // Get filters
+                const timeFilter = document.querySelector('.filter-select:nth-of-type(1)')?.value || 'All Transactions';
+                const statusFilter = document.querySelector('.filter-select:nth-of-type(2)')?.value || 'All Statuses';
+                const shardFilter = document.querySelector('.filter-select:nth-of-type(3)')?.value || 'All Shards';
+                state.pageSize = parseInt(document.querySelector('.filter-select:nth-of-type(4)')?.value || '10');
+
+                // Build filters object
+                state.filters = {};
+                if (timeFilter !== 'All Transactions') {
+                    state.filters.period = timeFilter.toLowerCase().replace(' ', '_');
+                }
+                if (statusFilter !== 'All Statuses') {
+                    state.filters.status = statusFilter.toLowerCase();
+                }
+                if (shardFilter !== 'All Shards') {
+                    state.filters.shardId = shardFilter.replace('Shard ', '');
+                }
+
+                // Set filter values in the UI to match state - with null checks
+                try {
+                    const timeFilterElement = document.querySelector('.filter-select:nth-of-type(1)');
+                    const statusFilterElement = document.querySelector('.filter-select:nth-of-type(2)');
+                    const shardFilterElement = document.querySelector('.filter-select:nth-of-type(3)');
+                    const pageSizeElement = document.querySelector('.filter-select:nth-of-type(4)');
+
+                    if (timeFilterElement && timeFilter !== 'All Transactions') {
+                        timeFilterElement.value = timeFilter;
+                    }
+
+                    if (statusFilterElement && statusFilter !== 'All Statuses') {
+                        statusFilterElement.value = statusFilter;
+                    }
+
+                    if (shardFilterElement && shardFilter !== 'All Shards') {
+                        shardFilterElement.value = shardFilter;
+                    }
+
+                    if (pageSizeElement) {
+                        pageSizeElement.value = state.pageSize.toString();
+                    }
+                } catch (filterError) {
+                    console.error('Error setting filter values:', filterError);
+                }
+
+                let transactions = [];
+
+                try {
+                    // Get transactions directly from BlockchainService
+                    console.log('Getting transactions directly from BlockchainService');
+
+                    // Make sure we have some transactions
+                    if (BlockchainService.blockchain.transactions.length === 0) {
+                        console.log('No transactions in BlockchainService, generating some...');
+                        // Generate a few transactions
+                        for (let i = 0; i < 10; i++) {
+                            BlockchainService.generateRandomTransaction();
+                        }
+                    }
+
+                    // Get transactions from BlockchainService
+                    const response = BlockchainService.getTransactions(state.currentPage, state.pageSize, state.filters);
+                    transactions = response.transactions;
+                    state.totalPages = response.totalPages;
+
+                    // Store transactions in state
+                    state.transactions = transactions;
+
+                    // Save state to localStorage
+                    saveStateToStorage();
+
+                    console.log('Successfully fetched transaction data from BlockchainService');
+                } catch (fetchError) {
+                    console.error('Error fetching transactions:', fetchError);
+
+                    // If we have cached data, use it instead
+                    if (state.transactions.length > 0) {
+                        transactions = state.transactions;
+                        console.log('Falling back to cached transactions after fetch error');
+                    } else {
+                        // Try to get any transactions from BlockchainService as a last resort
+                        try {
+                            // Generate a few transactions if needed
+                            for (let i = 0; i < 5; i++) {
+                                BlockchainService.generateRandomTransaction();
+                            }
+
+                            // Get whatever transactions are available
+                            const fallbackResponse = BlockchainService.getTransactions(1, 10, {});
+                            transactions = fallbackResponse.transactions;
+                            state.totalPages = fallbackResponse.totalPages;
+                            state.transactions = transactions;
+
+                            console.log('Generated fallback transactions');
+                        } catch (lastResortError) {
+                            console.error('Failed to generate fallback transactions:', lastResortError);
+                            transactions = [];
+                            state.totalPages = 0;
+                        }
+                    }
+                }
+
+                // Update table
+                tableBody.innerHTML = '';
+
+                transactions.forEach(tx => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="hash-cell">${Utils.formatHash(tx.hash)}</td>
+                        <td>${tx.blockNumber || 'Pending'}</td>
+                        <td>${Utils.formatRelativeTime(tx.timestamp)}</td>
+                        <td class="address-cell">${Utils.formatHash(tx.from)}</td>
+                        <td class="address-cell">${Utils.formatHash(tx.to)}</td>
+                        <td class="transaction-amount">${Utils.formatAmount(tx.amount)}</td>
+                        <td><span class="status status-${tx.status.toLowerCase()}">${tx.status}</span></td>
+                    `;
+
+                    // Add click event to show transaction details
+                    row.addEventListener('click', () => {
+                        loadTransactionDetails(tx.hash);
+                    });
+
+                    tableBody.appendChild(row);
+                });
+
+                // Update pagination
+                updatePagination();
+
+            } catch (error) {
+                Utils.showError('Failed to load transactions: ' + error.message);
+                console.error('Transactions loading error:', error);
+
+                // If error occurs, try to use cached data
+                if (state.transactions.length > 0) {
+                    console.log('Falling back to cached transactions data');
+                    displayCachedTransactions();
+                }
+            }
+        }
+
+
+
+        // Display cached transactions when API fails
+        function displayCachedTransactions() {
+            try {
+                const tableBody = document.querySelector('.transactions-table tbody');
+                tableBody.innerHTML = '';
+
+                state.transactions.forEach(tx => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="hash-cell">${Utils.formatHash(tx.hash)}</td>
+                        <td>${tx.blockNumber || 'Pending'}</td>
+                        <td>${Utils.formatRelativeTime(tx.timestamp)}</td>
+                        <td class="address-cell">${Utils.formatHash(tx.from)}</td>
+                        <td class="address-cell">${Utils.formatHash(tx.to)}</td>
+                        <td class="transaction-amount">${Utils.formatAmount(tx.amount)}</td>
+                        <td><span class="status status-${tx.status.toLowerCase()}">${tx.status}</span></td>
+                    `;
+
+                    // Add click event to show transaction details
+                    row.addEventListener('click', () => {
+                        loadTransactionDetails(tx.hash);
+                    });
+
+                    tableBody.appendChild(row);
+                });
+
+                // Update pagination
+                updatePagination();
+
+            } catch (error) {
+                console.error('Error displaying cached transactions:', error);
+            }
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const paginationContainer = document.querySelector('.pagination');
+            paginationContainer.innerHTML = '';
+
+            const pagination = Utils.createPagination(state.currentPage, state.totalPages, (page) => {
+                state.currentPage = page;
+                loadTransactions();
+            });
+
+            paginationContainer.appendChild(pagination);
+        }
+
+        // Load transaction details
+        async function loadTransactionDetails(txHash) {
+            try {
+                // Get the transaction details container
+                const detailsContainer = document.querySelector('.transaction-details');
+                if (!detailsContainer) {
+                    throw new Error('Transaction details container not found');
+                }
+
+                // Show loading state
+                Utils.showLoading(detailsContainer);
+
+                let transaction;
+
+                try {
+                    // Try to fetch transaction details from API
+                    transaction = await API.Transactions.getTransaction(txHash);
+                } catch (fetchError) {
+                    console.error('Error fetching transaction details:', fetchError);
+
+                    // Check if we have this transaction in our cached state
+                    transaction = state.transactions.find(tx => tx.hash === txHash);
+
+                    if (!transaction) {
+                        // If not found in cache, check if we have a selected transaction
+                        if (state.selectedTransaction && state.selectedTransaction.hash === txHash) {
+                            transaction = state.selectedTransaction;
+                        } else {
+                            // If still not found, create a sample transaction
+                            transaction = createSampleTransaction(txHash);
+                            Utils.showError('Could not fetch transaction details. Showing sample data.');
+                        }
+                    } else {
+                        Utils.showError('Using cached transaction details.');
+                    }
+                }
+
+                // Save the selected transaction
+                state.selectedTransaction = transaction;
+
+                // Update URL to include transaction hash without reloading the page
+                const url = new URL(window.location);
+                url.searchParams.set('tx', txHash);
+                window.history.pushState({}, '', url);
+
+                // Rebuild the transaction details structure
+                detailsContainer.innerHTML = `
+                    <h3 class="transaction-details-title">Transaction Details: ${Utils.formatHash(transaction.hash)}</h3>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Transaction Hash</div>
+                            <div class="detail-value monospace">${transaction.hash}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value"><span class="status status-${transaction.status.toLowerCase()}">${transaction.status}</span></div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Block</div>
+                            <div class="detail-value">${transaction.blockNumber || 'Pending'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">${Utils.formatTimestamp(transaction.timestamp)} (${Utils.formatRelativeTime(transaction.timestamp)})</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Shard ID</div>
+                            <div class="detail-value">${transaction.shardId}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Gas Used</div>
+                            <div class="detail-value">${transaction.gasUsed}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Gas Price</div>
+                            <div class="detail-value">${transaction.gasPrice} Gwei</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Transaction Fee</div>
+                            <div class="detail-value">${(transaction.gasUsed * transaction.gasPrice / 1e9).toFixed(6)} ETH</div>
+                        </div>
+                    </div>
+
+                    <div class="transaction-flow">
+                        <div class="address-box">
+                            <div class="address-label">From</div>
+                            <div class="address-value">${transaction.from}</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="address-box">
+                            <div class="address-label">To</div>
+                            <div class="address-value">${transaction.to}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Value</div>
+                            <div class="detail-value">${Utils.formatAmount(transaction.amount)}</div>
+                        </div>
+                        <div class="transaction-data">
+                            <div class="data-title">Transaction Data</div>
+                            <div class="data-content">${transaction.data || 'No data'}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Signature</div>
+                            <div class="detail-value monospace">
+                                r: ${transaction.signature?.r || 'N/A'}<br>
+                                s: ${transaction.signature?.s || 'N/A'}<br>
+                                v: ${transaction.signature?.v || 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Scroll to transaction details
+                detailsContainer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                Utils.showError('Failed to load transaction details: ' + error.message);
+                console.error('Transaction details loading error:', error);
+            }
+        }
+
+        // Create a sample transaction for display when real data can't be fetched
+        function createSampleTransaction(txHash) {
+            const addresses = [
+                '0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c',
+                '0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b'
+            ];
+
+            // Get a valid block number from BlockchainService
+            let blockNumber = null;
+            try {
+                // Get a random block from the first 50 blocks
+                const randomBlockIndex = Math.floor(Math.random() * Math.min(50, BlockchainService.blockchain.blocks.length));
+                if (randomBlockIndex >= 0 && BlockchainService.blockchain.blocks[randomBlockIndex]) {
+                    blockNumber = BlockchainService.blockchain.blocks[randomBlockIndex].number;
+                }
+            } catch (error) {
+                console.error('Error getting valid block number:', error);
+                blockNumber = Math.floor(Math.random() * 50) + 1; // Fallback to a number likely to be valid
+            }
+
+            return {
+                hash: txHash || '0x' + Math.random().toString(16).substring(2, 42),
+                blockNumber: blockNumber,
+                timestamp: Date.now() - Math.floor(Math.random() * 86400000),
+                from: addresses[0],
+                to: addresses[1],
+                amount: parseFloat((Math.random() * 5).toFixed(2)),
+                status: blockNumber ? 'Confirmed' : 'Pending',
+                shardId: Math.floor(Math.random() * 3) + 1,
+                gasUsed: 21000,
+                gasPrice: 20,
+                data: '0x',
+                signature: {
+                    r: '0x' + Math.random().toString(16).substring(2, 42),
+                    s: '0x' + Math.random().toString(16).substring(2, 42),
+                    v: 27
+                }
+            };
+        }
+
+        // Handle search
+        document.querySelector('.search-btn').addEventListener('click', async function() {
+            const searchInput = document.querySelector('.search-input').value.trim();
+
+            if (!searchInput) {
+                Utils.showError('Please enter a transaction hash, address, or block number');
+                return;
+            }
+
+            try {
+                // Try to load transaction by hash
+                await loadTransactionDetails(searchInput);
+            } catch (error) {
+                try {
+                    // If not found, try to find block
+                    const block = await API.Blocks.getBlock(searchInput);
+
+                    // If block found, navigate to block page
+                    window.location.href = `blocks.html?block=${block.number}`;
+                } catch (blockError) {
+                    // Try to find transactions by address
+                    try {
+                        state.filters.address = searchInput;
+                        await loadTransactions();
+                        delete state.filters.address;
+                    } catch (addressError) {
+                        Utils.showError('No transaction, block, or address found with the given search term');
+                        console.error('Search error:', error, blockError, addressError);
+                    }
+                }
+            }
+        });
+
+        // Handle filter changes
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', () => {
+                state.currentPage = 1; // Reset to first page
+                loadTransactions(true); // Force refresh with new filters
+            });
+        });
+
+        // Add refresh button event listener
+        document.querySelector('.header-content .btn-primary').addEventListener('click', () => {
+            loadTransactions(true); // Force refresh
+        });
+
+        // Process all pending transactions
+        async function processAllPendingTransactions() {
+            try {
+                const button = document.getElementById('process-pending-btn');
+                button.textContent = 'Processing...';
+                button.disabled = true;
+
+                // Call the API to process all pending transactions
+                const result = await API.Status.processAllPendingTransactions();
+
+                if (result.success) {
+                    Utils.showSuccess(result.message);
+                    // Reload transactions after a short delay
+                    setTimeout(() => {
+                        loadTransactions(true);
+                        button.textContent = 'Process All Pending Transactions';
+                        button.disabled = false;
+                    }, 1000);
+                } else {
+                    Utils.showError(result.message || 'Failed to process pending transactions');
+                    button.textContent = 'Process All Pending Transactions';
+                    button.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error processing pending transactions:', error);
+                Utils.showError('Error processing pending transactions: ' + error.message);
+                const button = document.getElementById('process-pending-btn');
+                button.textContent = 'Process All Pending Transactions';
+                button.disabled = false;
+            }
+        }
+
+        // Add process pending transactions button event listener
+        document.getElementById('process-pending-btn')?.addEventListener('click', () => {
+            processAllPendingTransactions();
+        });
+
+        // Check URL parameters for transaction hash
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const txHash = urlParams.get('tx');
+
+            if (txHash) {
+                loadTransactionDetails(txHash);
+            }
+        }
+
+        // Ensure blockchain service is initialized
+        function ensureBlockchainInitialized() {
+            // Check if BlockchainService is available and initialized
+            if (typeof BlockchainService !== 'undefined') {
+                if (!BlockchainService.initialized) {
+                    console.log('Initializing BlockchainService from transactions page');
+                    BlockchainService.initialize();
+                }
+                return true;
+            } else {
+                console.error('BlockchainService is not defined');
+                return false;
+            }
+        }
+
+        // Initialize page - with better error handling
+        let initializationAttempted = false;
+
+        function initializePage() {
+            // Prevent multiple initialization attempts
+            if (initializationAttempted) {
+                console.log('Initialization already attempted, skipping');
+                return;
+            }
+
+            initializationAttempted = true;
+            console.log('Initializing transactions page...');
+
+            // First, ensure blockchain service is initialized
+            if (typeof BlockchainService === 'undefined') {
+                console.error('BlockchainService is not defined');
+                Utils.showError('Failed to initialize: BlockchainService not available');
+                return;
+            }
+
+            if (!BlockchainService.initialized) {
+                console.log('BlockchainService not initialized, initializing now');
+                try {
+                    BlockchainService.initialize();
+                } catch (initError) {
+                    console.error('Failed to initialize BlockchainService:', initError);
+                    Utils.showError('Failed to initialize blockchain service');
+                    return;
+                }
+            }
+
+            console.log('BlockchainService initialized successfully');
+
+            // Load state from localStorage
+            try {
+                loadStateFromStorage();
+            } catch (storageError) {
+                console.error('Error loading state from storage:', storageError);
+            }
+
+            // Make sure we have transactions in the blockchain service
+            if (BlockchainService.blockchain.transactions.length === 0) {
+                console.log('No transactions found in BlockchainService, generating some...');
+                try {
+                    // Generate at least 10 transactions
+                    for (let i = 0; i < 10; i++) {
+                        BlockchainService.generateRandomTransaction();
+                    }
+                } catch (genError) {
+                    console.error('Error generating transactions:', genError);
+                }
+            }
+
+            // Update UI with saved filter values - with proper error handling
+            setTimeout(() => {
+                try {
+                    if (state.pageSize) {
+                        const pageSizeSelect = document.querySelector('.filter-select:nth-of-type(4)');
+                        if (pageSizeSelect) {
+                            pageSizeSelect.value = state.pageSize.toString();
+                        }
+                    }
+
+                    // Also set other filter values if they exist
+                    if (state.filters) {
+                        const timeFilterElement = document.querySelector('.filter-select:nth-of-type(1)');
+                        const statusFilterElement = document.querySelector('.filter-select:nth-of-type(2)');
+                        const shardFilterElement = document.querySelector('.filter-select:nth-of-type(3)');
+
+                        // Set time filter
+                        if (timeFilterElement && state.filters.period) {
+                            const period = state.filters.period.replace('_', ' ');
+                            const options = Array.from(timeFilterElement.options).map(opt => opt.text);
+                            const matchingOption = options.find(opt => opt.toLowerCase().includes(period));
+                            if (matchingOption) {
+                                timeFilterElement.value = matchingOption;
+                            }
+                        }
+
+                        // Set status filter
+                        if (statusFilterElement && state.filters.status) {
+                            const options = Array.from(statusFilterElement.options).map(opt => opt.text);
+                            const matchingOption = options.find(opt =>
+                                opt.toLowerCase() === state.filters.status.toLowerCase() ||
+                                opt.toLowerCase().includes(state.filters.status.toLowerCase())
+                            );
+                            if (matchingOption) {
+                                statusFilterElement.value = matchingOption;
+                            }
+                        }
+
+                        // Set shard filter
+                        if (shardFilterElement && state.filters.shardId) {
+                            const options = Array.from(shardFilterElement.options).map(opt => opt.text);
+                            const matchingOption = options.find(opt =>
+                                opt.includes(`Shard ${state.filters.shardId}`)
+                            );
+                            if (matchingOption) {
+                                shardFilterElement.value = matchingOption;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error setting filter values during initialization:', error);
+                }
+
+                // Display transactions from BlockchainService
+                console.log('Loading transactions from BlockchainService');
+                loadTransactions(true).then(() => {
+                    // Check URL parameters for transaction details
+                    checkUrlParams();
+
+                    // Save state to localStorage for future visits
+                    saveStateToStorage();
+
+                    // Set up process pending transactions button
+                    const processButton = document.getElementById('process-pending-btn');
+                    if (processButton) {
+                        processButton.addEventListener('click', () => {
+                            processAllPendingTransactions();
+                        });
+                    }
+
+                    console.log('Transactions page initialization complete');
+                }).catch(error => {
+                    console.error('Error loading transactions:', error);
+
+                    // Try to load transactions directly from BlockchainService as a fallback
+                    try {
+                        console.log('Attempting to load transactions directly from BlockchainService');
+                        const response = BlockchainService.getTransactions(1, 10, {});
+                        state.transactions = response.transactions;
+                        state.totalPages = response.totalPages;
+                        displayCachedTransactions();
+                    } catch (fallbackError) {
+                        console.error('Fallback loading failed:', fallbackError);
+                    }
+                });
+            }, 100); // Small delay to ensure DOM is fully loaded
+        }
+
+        // Initialize on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+        // Also try to initialize immediately if document is already loaded
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('Document already loaded, initializing immediately');
+            setTimeout(initializePage, 0);
+        }
+
+        // Add event listener for page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            // When page becomes visible again after being hidden
+            if (document.visibilityState === 'visible') {
+                console.log('Page is now visible, refreshing data');
+                // Refresh data when user returns to the page
+                loadTransactions(true);
+            }
+        });
+    </script>
+</body>
+</html>

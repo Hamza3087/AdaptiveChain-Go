@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Merkle Forest - Advanced Blockchain</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --success-color: #38b000;
+            --warning-color: #ffbe0b;
+            --danger-color: #ff006e;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            margin-left: 10px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a75e6;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Page Content */
+        .page-content {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        /* AMF Stats */
+        .amf-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .card-title {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .stat-card .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .stat-card .card-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .card-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-card .card-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card .card-change.negative {
+            color: var(--danger-color);
+        }
+
+        .icon-primary {
+            background-color: rgba(58, 134, 255, 0.1);
+            color: var(--primary-color);
+        }
+
+        .icon-secondary {
+            background-color: rgba(131, 56, 236, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .icon-success {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success-color);
+        }
+
+        .icon-warning {
+            background-color: rgba(255, 190, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        /* AMF Visualization */
+        .amf-visualization {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .visualization-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .visualization-title {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .visualization-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .visualization-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .visualization-container {
+            height: 500px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Forest Visualization */
+        .forest {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .forest-level {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .shard {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 0 15px;
+            min-width: 150px;
+            text-align: center;
+            position: relative;
+            box-shadow: var(--box-shadow);
+        }
+
+        .shard::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 20px;
+            background-color: var(--primary-color);
+        }
+
+        .shard-id {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .shard-info {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .merkle-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree-level {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tree-node {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            font-size: 12px;
+            color: var(--secondary-color);
+            position: relative;
+        }
+
+        .tree-node::before, .tree-node::after {
+            content: "";
+            position: absolute;
+            top: -20px;
+            width: 2px;
+            height: 20px;
+            background-color: var(--secondary-color);
+        }
+
+        .tree-node::before {
+            left: 25%;
+            transform: rotate(-30deg);
+        }
+
+        .tree-node::after {
+            right: 25%;
+            transform: rotate(30deg);
+        }
+
+        .tree-level:first-child .tree-node::before,
+        .tree-level:first-child .tree-node::after {
+            display: none;
+        }
+
+        /* Shard Details */
+        .shard-details {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            margin-top: 30px;
+        }
+
+        .shard-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .shard-details-title {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .shard-details-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .shard-details-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .shard-detail-group {
+            margin-bottom: 15px;
+        }
+
+        .shard-detail-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .shard-detail-value {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .shard-operations {
+            margin-top: 20px;
+        }
+
+        .shard-operations-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .operations-list {
+            list-style: none;
+        }
+
+        .operation-item {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .operation-type {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .operation-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Shard Keys Styles */
+        .shard-keys {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .shard-keys-container {
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 15px;
+        }
+
+        .key-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-item {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .key-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .key-item .key {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .key-item .value {
+            color: #666;
+            word-break: break-all;
+        }
+
+        .key-item .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px;
+            border-radius: 3px;
+        }
+
+        .key-item .copy-btn:hover {
+            color: var(--primary-color);
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .shard-details-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .amf-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .forest-level {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .shard {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">⛓️</span>
+                    <h1>Advanced Blockchain</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, Admin</span>
+                    <button class="btn btn-primary">Connect Wallet</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="index.html"><i>📊</i> Dashboard</a></li>
+                    <li><a href="blocks.html"><i>📦</i> Blocks</a></li>
+                    <li><a href="transactions.html"><i>💸</i> Transactions</a></li>
+                    <li><a href="nodes.html"><i>👥</i> Nodes</a></li>
+                    <li><a href="amf.html" class="active"><i>🌳</i> AMF</a></li>
+                </ul>
+            </div>
+
+            <div class="page-content">
+                <h2 class="page-title"><i>🌳</i> Adaptive Merkle Forest</h2>
+
+                <div class="amf-stats">
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">TOTAL SHARDS</h3>
+                            <div class="card-icon icon-primary">🧩</div>
+                        </div>
+                        <div class="card-value">12</div>
+                        <div class="card-change positive">
+                            <span>↑ 2</span> from last hour
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">ACTIVE SHARDS</h3>
+                            <div class="card-icon icon-success">✅</div>
+                        </div>
+                        <div class="card-value">8</div>
+                        <div class="card-change positive">
+                            <span>↑ 1</span> from last hour
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">SHARD DEPTH</h3>
+                            <div class="card-icon icon-secondary">📏</div>
+                        </div>
+                        <div class="card-value">4</div>
+                        <div class="card-change">
+                            <span>-</span> no change
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">REBALANCE OPERATIONS</h3>
+                            <div class="card-icon icon-warning">⚖️</div>
+                        </div>
+                        <div class="card-value">3</div>
+                        <div class="card-change positive">
+                            <span>↑ 2</span> from last hour
+                        </div>
+                    </div>
+                </div>
+
+                <div class="amf-visualization">
+                    <div class="visualization-header">
+                        <h3 class="visualization-title"><i>🌳</i> Forest Visualization</h3>
+                        <div class="visualization-controls">
+                            <button class="btn btn-primary">Refresh</button>
+                            <button class="btn btn-add">Add Shard</button>
+                            <button class="btn btn-verify">Verify Proof</button>
+                            <button class="btn btn-test">Test Connection</button>
+                        </div>
+                    </div>
+                    <div class="visualization-container">
+                        <div class="forest">
+                            <div class="forest-level">
+                                <div class="shard" onclick="showShardDetails('shard-root')">
+                                    <div class="shard-id">Root Shard</div>
+                                    <div class="shard-info">Keys: 0</div>
+                                    <div class="shard-info">Hash: 0x8a7d...</div>
+                                </div>
+                            </div>
+                            <div class="forest-level">
+                                <div class="shard" onclick="showShardDetails('shard-1')">
+                                    <div class="shard-id">Shard 1</div>
+                                    <div class="shard-info">Keys: 156</div>
+                                    <div class="shard-info">Hash: 0x7b6c...</div>
+                                </div>
+                                <div class="shard" onclick="showShardDetails('shard-2')">
+                                    <div class="shard-id">Shard 2</div>
+                                    <div class="shard-info">Keys: 243</div>
+                                    <div class="shard-info">Hash: 0x6a5b...</div>
+                                </div>
+                                <div class="shard" onclick="showShardDetails('shard-3')">
+                                    <div class="shard-id">Shard 3</div>
+                                    <div class="shard-info">Keys: 189</div>
+                                    <div class="shard-info">Hash: 0x5f4e...</div>
+                                </div>
+                            </div>
+                            <div class="forest-level">
+                                <div class="shard" onclick="showShardDetails('shard-1-1')">
+                                    <div class="shard-id">Shard 1-1</div>
+                                    <div class="shard-info">Keys: 78</div>
+                                    <div class="shard-info">Hash: 0x4d3c...</div>
+                                </div>
+                                <div class="shard" onclick="showShardDetails('shard-1-2')">
+                                    <div class="shard-id">Shard 1-2</div>
+                                    <div class="shard-info">Keys: 78</div>
+                                    <div class="shard-info">Hash: 0x3b2a...</div>
+                                </div>
+                                <div class="shard" onclick="showShardDetails('shard-2-1')">
+                                    <div class="shard-id">Shard 2-1</div>
+                                    <div class="shard-info">Keys: 121</div>
+                                    <div class="shard-info">Hash: 0x2a1b...</div>
+                                </div>
+                                <div class="shard" onclick="showShardDetails('shard-2-2')">
+                                    <div class="shard-id">Shard 2-2</div>
+                                    <div class="shard-info">Keys: 122</div>
+                                    <div class="shard-info">Hash: 0x1a0f...</div>
+                                </div>
+                                <div class="shard" onclick="showShardDetails('shard-3-1')">
+                                    <div class="shard-id">Shard 3-1</div>
+                                    <div class="shard-info">Keys: 189</div>
+                                    <div class="shard-info">Hash: 0x0f9e...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shard-details" id="shardDetails">
+                    <div class="shard-details-header">
+                        <h3 class="shard-details-title"><i>🧩</i> Shard Details: <span id="shardDetailId">Shard 1</span></h3>
+                    </div>
+                    <div class="shard-details-content">
+                        <div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Shard ID</div>
+                                <div class="shard-detail-value">shard-1</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Parent Shard</div>
+                                <div class="shard-detail-value">root</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Child Shards</div>
+                                <div class="shard-detail-value">shard-1-1, shard-1-2</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Creation Time</div>
+                                <div class="shard-detail-value">2023-06-15 08:30:15 UTC</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Number of Keys</div>
+                                <div class="shard-detail-value">156</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Merkle Root Hash</div>
+                                <div class="shard-detail-value">0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Last Updated</div>
+                                <div class="shard-detail-value">2023-06-15 10:45:32 UTC (5 mins ago)</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Status</div>
+                                <div class="shard-detail-value">Active</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shard-operations">
+                        <h4 class="shard-operations-title">Recent Operations</h4>
+                        <ul class="operations-list">
+                            <li class="operation-item">
+                                <span class="operation-type">Key Update</span>
+                                <span class="operation-time">5 mins ago</span>
+                            </li>
+                            <li class="operation-item">
+                                <span class="operation-type">Proof Generation</span>
+                                <span class="operation-time">8 mins ago</span>
+                            </li>
+                            <li class="operation-item">
+                                <span class="operation-type">Split Operation</span>
+                                <span class="operation-time">15 mins ago</span>
+                            </li>
+                            <li class="operation-item">
+                                <span class="operation-type">Key Update</span>
+                                <span class="operation-time">22 mins ago</span>
+                            </li>
+                            <li class="operation-item">
+                                <span class="operation-type">Rebalance</span>
+                                <span class="operation-time">35 mins ago</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="merkle-tree">
+                        <h4 class="shard-operations-title">Merkle Tree Visualization</h4>
+                        <div class="tree-level">
+                            <div class="tree-node">Root</div>
+                        </div>
+                        <div class="tree-level">
+                            <div class="tree-node">H1</div>
+                            <div class="tree-node">H2</div>
+                        </div>
+                        <div class="tree-level">
+                            <div class="tree-node">H3</div>
+                            <div class="tree-node">H4</div>
+                            <div class="tree-node">H5</div>
+                            <div class="tree-node">H6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Shard Modal -->
+    <div id="addShardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Shard</h3>
+                <button class="modal-close" onclick="closeModal('addShardModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addShardForm">
+                    <div class="form-group">
+                        <label for="parentShardId">Parent Shard ID</label>
+                        <select id="parentShardId" class="form-control" required>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                        <div class="form-helper">Select the parent shard to which this shard will be attached</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="initialKeys">Initial Keys</label>
+                        <input type="number" id="initialKeys" class="form-control" value="50" min="1" max="1000">
+                        <div class="form-helper">Number of initial keys to allocate to this shard</div>
+                    </div>
+
+                    <div id="addShardResult" class="add-shard-result"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="submitAddShard">Add Shard</button>
+                <button class="btn btn-secondary" onclick="closeModal('addShardModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verify Proof Modal -->
+    <div id="verifyProofModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Verify Merkle Proof</h3>
+                <button class="modal-close" onclick="closeModal('verifyProofModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="verifyProofForm">
+                    <div class="form-group">
+                        <label for="proofShardId">Shard ID</label>
+                        <select id="proofShardId" class="form-control" required>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                        <div class="form-helper">Select the shard containing the key</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="proofKey">Key</label>
+                        <input type="text" id="proofKey" class="form-control" placeholder="Enter key to verify" required>
+                        <div class="form-helper">Enter the key you want to verify</div>
+                    </div>
+
+                    <div id="verifyProofResult" class="verify-proof-result"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="submitVerifyProof">Verify Proof</button>
+                <button class="btn btn-secondary" onclick="closeModal('verifyProofModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/blockchain-service.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/responsive.js"></script>
+    <script>
+        // Global state
+        const state = {
+            forestStructure: null,
+            selectedShard: null
+        };
+
+        // Load AMF stats
+        async function loadAMFStats() {
+            try {
+                // Show loading state
+                document.querySelectorAll('.stat-card .card-value').forEach(el => {
+                    el.innerHTML = '<span style="color: #ccc;">Loading...</span>';
+                });
+
+                // Force update AMF stats before fetching them
+                // This ensures we get the most up-to-date stats
+                await API.AMF.updateAMF();
+
+                // Fetch AMF stats
+                const stats = await API.AMF.getStats();
+
+                console.log("Loaded AMF stats:", stats);
+
+                // Update stats cards
+                document.querySelector('.stat-card:nth-child(1) .card-value').textContent = Utils.formatNumber(stats.totalShards);
+                document.querySelector('.stat-card:nth-child(2) .card-value').textContent = Utils.formatNumber(stats.activeShards);
+                document.querySelector('.stat-card:nth-child(3) .card-value').textContent = Utils.formatNumber(stats.shardDepth);
+                document.querySelector('.stat-card:nth-child(4) .card-value').textContent = Utils.formatNumber(stats.rebalanceOperations);
+
+            } catch (error) {
+                Utils.showError('Failed to load AMF stats: ' + error.message);
+                console.error('AMF stats loading error:', error);
+            }
+        }
+
+        // Load forest structure
+        async function loadForestStructure() {
+            try {
+                // Show loading state
+                const container = document.querySelector('.forest');
+                Utils.showLoading(container);
+
+                // Fetch forest structure
+                state.forestStructure = await API.AMF.getForestStructure();
+
+                // Get all shards from blockchain service for additional data
+                const allShards = BlockchainService.blockchain.shards;
+
+                // Log all shards for debugging
+                console.log("All shards in blockchain:", Object.keys(allShards));
+                console.log("All shards in forest structure:", state.forestStructure.shards.map(s => s.id));
+
+                // Update forest visualization
+                container.innerHTML = '';
+
+                // Ensure all shards from blockchain are in the forest structure
+                Object.values(allShards).forEach(shard => {
+                    // Check if shard is already in forest structure
+                    const existsInForest = state.forestStructure.shards.some(s => s.id === shard.id);
+
+                    if (!existsInForest) {
+                        console.log(`Adding missing shard to forest structure: ${shard.id}`);
+
+                        // Determine level based on parent
+                        let level = 0;
+                        if (shard.parentId) {
+                            const parentInForest = state.forestStructure.shards.find(s => s.id === shard.parentId);
+                            if (parentInForest) {
+                                level = (parentInForest.level || 0) + 1;
+                            }
+                        }
+
+                        // Add to forest structure
+                        state.forestStructure.shards.push({
+                            id: shard.id,
+                            parentId: shard.parentId,
+                            level: level,
+                            keys: shard.keys,
+                            hash: shard.hash
+                        });
+                    }
+                });
+
+                // Group shards by level and ensure proper parent-child relationships
+                const shardsByLevel = {};
+                state.forestStructure.shards.forEach(shard => {
+                    // Ensure level is a number
+                    const level = shard.level || 0;
+
+                    if (!shardsByLevel[level]) {
+                        shardsByLevel[level] = [];
+                    }
+                    shardsByLevel[level].push(shard);
+                });
+
+                // Sort shards within each level by ID for consistent display
+                Object.keys(shardsByLevel).forEach(level => {
+                    shardsByLevel[level].sort((a, b) => {
+                        // Special case for Root Shard
+                        if (a.id === 'Root Shard') return -1;
+                        if (b.id === 'Root Shard') return 1;
+
+                        // Extract numeric parts for sorting
+                        const aMatch = a.id.match(/\d+/g);
+                        const bMatch = b.id.match(/\d+/g);
+
+                        if (!aMatch || !bMatch) return a.id.localeCompare(b.id);
+
+                        // Compare first numeric part
+                        const aNum = parseInt(aMatch[0]);
+                        const bNum = parseInt(bMatch[0]);
+
+                        if (aNum !== bNum) return aNum - bNum;
+
+                        // If first numbers are the same, compare second numeric part if exists
+                        if (aMatch.length > 1 && bMatch.length > 1) {
+                            return parseInt(aMatch[1]) - parseInt(bMatch[1]);
+                        }
+
+                        return a.id.localeCompare(b.id);
+                    });
+                });
+
+                // Create forest levels
+                Object.keys(shardsByLevel)
+                    .sort((a, b) => parseInt(a) - parseInt(b))
+                    .forEach(level => {
+                        const levelElement = document.createElement('div');
+                        levelElement.className = 'forest-level';
+                        levelElement.setAttribute('data-level', level);
+
+                        // Calculate total shards at this level for display
+                        const totalShardsAtLevel = shardsByLevel[level].length;
+                        console.log(`Level ${level} has ${totalShardsAtLevel} shards:`, shardsByLevel[level].map(s => s.id).join(', '));
+
+                        // Add level indicator
+                        const levelIndicator = document.createElement('div');
+                        levelIndicator.className = 'level-indicator';
+                        levelIndicator.textContent = `Level ${level}`;
+                        container.appendChild(levelIndicator);
+
+                        shardsByLevel[level].forEach(shard => {
+                            const shardElement = document.createElement('div');
+                            shardElement.className = 'shard';
+                            shardElement.setAttribute('data-id', shard.id);
+
+                            // Get full shard data from blockchain service
+                            const fullShardData = allShards[shard.id];
+
+                            if (!fullShardData) {
+                                console.warn(`Shard ${shard.id} exists in forest structure but not in blockchain`);
+                            }
+
+                            const childCount = fullShardData && fullShardData.childIds ? fullShardData.childIds.length : 0;
+                            const parentId = fullShardData ? fullShardData.parentId : shard.parentId;
+
+                            shardElement.innerHTML = `
+                                <div class="shard-id">${shard.id}</div>
+                                <div class="shard-info">Parent: ${parentId || 'None'}</div>
+                                <div class="shard-info">Keys: ${shard.keys}</div>
+                                <div class="shard-info">Children: ${childCount}</div>
+                            `;
+
+                            // Add click event to show shard details
+                            shardElement.addEventListener('click', () => {
+                                loadShardDetails(shard.id);
+                            });
+
+                            levelElement.appendChild(shardElement);
+                        });
+
+                        container.appendChild(levelElement);
+                    });
+
+                // Don't override AMF stats here, just refresh the display
+                // This ensures we use the actual AMF stats from BlockchainService
+
+                // Refresh AMF stats display
+                await loadAMFStats();
+
+            } catch (error) {
+                Utils.showError('Failed to load forest structure: ' + error.message);
+                console.error('Forest structure loading error:', error);
+            }
+        }
+
+        // Load shard details
+        async function loadShardDetails(shardId) {
+            // Show loading state
+            const detailsContainer = document.querySelector('.shard-details');
+            if (!detailsContainer) {
+                console.error("Shard details container not found");
+                return;
+            }
+
+            try {
+                console.log("Loading details for shard:", shardId);
+
+                // Show loading indicator
+                detailsContainer.innerHTML = '<div class="loading-indicator"><div class="spinner"></div><p>Loading shard details...</p></div>';
+
+                // Get shard details directly from BlockchainService
+                const shard = BlockchainService.blockchain.shards[shardId];
+                if (!shard) {
+                    throw new Error(`Shard ${shardId} not found in blockchain`);
+                }
+
+                console.log("Found shard details:", shard);
+                state.selectedShard = shard;
+
+                // Ensure childIds is an array
+                const childIds = shard.childIds || [];
+
+                // Rebuild the entire shard details section
+                detailsContainer.innerHTML = `
+                    <div class="shard-details-header">
+                        <h3 class="shard-details-title"><i>🧩</i> Shard Details: <span id="shardDetailId">${shardId}</span></h3>
+                    </div>
+                    <div class="shard-details-content">
+                        <div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Shard ID</div>
+                                <div class="shard-detail-value">${shard.id}</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Parent Shard</div>
+                                <div class="shard-detail-value">${shard.parentId || 'None'}</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Child Shards</div>
+                                <div class="shard-detail-value">${childIds.length > 0 ? childIds.join(', ') : 'None'}</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Creation Time</div>
+                                <div class="shard-detail-value">${Utils.formatTimestamp(shard.creationTime)}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Number of Keys</div>
+                                <div class="shard-detail-value">${shard.keys}</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Merkle Root Hash</div>
+                                <div class="shard-detail-value">${Utils.formatHash(shard.hash)}</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Last Updated</div>
+                                <div class="shard-detail-value">${Utils.formatTimestamp(shard.lastUpdated)} (${Utils.formatRelativeTime(shard.lastUpdated)})</div>
+                            </div>
+                            <div class="shard-detail-group">
+                                <div class="shard-detail-label">Status</div>
+                                <div class="shard-detail-value">${shard.status}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shard-operations">
+                        <h4 class="shard-operations-title">Recent Operations</h4>
+                        <ul class="operations-list">
+                            <li class="loading-indicator"><div class="spinner"></div><p>Loading operations...</p></li>
+                        </ul>
+                    </div>
+
+                    <div class="shard-keys">
+                        <h4 class="shard-operations-title">Shard Keys <button id="viewShardKeysBtn" class="btn btn-sm btn-primary">View Keys</button></h4>
+                        <div id="shardKeysContainer" class="shard-keys-container" style="display: none;">
+                            <div class="loading-indicator"><div class="spinner"></div><p>Loading keys...</p></div>
+                        </div>
+                    </div>
+
+                    <div class="merkle-tree">
+                        <h4 class="shard-operations-title">Merkle Tree Visualization</h4>
+                        <div class="tree-level">
+                            <div class="tree-node">Root</div>
+                        </div>
+                        <div class="tree-level">
+                            <div class="tree-node">H1</div>
+                            <div class="tree-node">H2</div>
+                        </div>
+                        <div class="tree-level">
+                            <div class="tree-node">H3</div>
+                            <div class="tree-node">H4</div>
+                            <div class="tree-node">H5</div>
+                            <div class="tree-node">H6</div>
+                        </div>
+                    </div>
+                `;
+
+                // Load shard operations
+                await loadShardOperations(shardId);
+
+                // Add event listener for the View Keys button
+                document.getElementById('viewShardKeysBtn').addEventListener('click', function() {
+                    loadShardKeys(shardId);
+                });
+
+                // Scroll to shard details
+                detailsContainer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                // Show error in the details container
+                detailsContainer.innerHTML = `
+                    <div class="shard-details-header">
+                        <h3 class="shard-details-title"><i>🧩</i> Shard Details: Error</h3>
+                    </div>
+                    <div class="error-message" style="padding: 20px; color: var(--danger-color);">
+                        Failed to load shard details: ${error.message}
+                    </div>
+                `;
+                console.error('Shard details loading error:', error);
+            }
+        }
+
+        // Load shard operations
+        async function loadShardOperations(shardId) {
+            try {
+                console.log("Loading operations for shard:", shardId);
+
+                // Get operations list container
+                const operationsList = document.querySelector('.operations-list');
+                if (!operationsList) {
+                    console.error("Operations list container not found");
+                    return;
+                }
+
+                // The loading indicator is already set in the loadShardDetails function
+
+                // Get shard operations directly from BlockchainService
+                const shard = BlockchainService.blockchain.shards[shardId];
+                if (!shard) {
+                    throw new Error(`Shard ${shardId} not found in blockchain`);
+                }
+
+                const operations = shard.operations || [];
+                console.log("Found operations:", operations);
+
+                // Clear the operations list (removing the loading indicator)
+                operationsList.innerHTML = '';
+
+                if (operations.length === 0) {
+                    operationsList.innerHTML = '<li class="no-operations">No operations recorded for this shard.</li>';
+                    return;
+                }
+
+                // Sort operations by timestamp (newest first)
+                operations.sort((a, b) => b.timestamp - a.timestamp);
+
+                // Add operations to the list
+                operations.forEach(op => {
+                    const opElement = document.createElement('li');
+                    opElement.className = 'operation-item';
+                    opElement.innerHTML = `
+                        <span class="operation-type">${op.type}</span>
+                        <span class="operation-time">${Utils.formatRelativeTime(op.timestamp)}</span>
+                    `;
+                    operationsList.appendChild(opElement);
+                });
+
+            } catch (error) {
+                const operationsList = document.querySelector('.operations-list');
+                if (operationsList) {
+                    operationsList.innerHTML = `<li class="error-message">Failed to load operations: ${error.message}</li>`;
+                }
+                console.error('Shard operations loading error:', error);
+            }
+        }
+
+        // Load and display shard keys
+        async function loadShardKeys(shardId) {
+            try {
+                console.log("Loading keys for shard:", shardId);
+
+                // Get the keys container
+                const keysContainer = document.getElementById('shardKeysContainer');
+                if (!keysContainer) {
+                    console.error("Shard keys container not found");
+                    return;
+                }
+
+                // Show the container if it's hidden
+                keysContainer.style.display = 'block';
+
+                // Show loading indicator
+                keysContainer.innerHTML = '<div class="loading-indicator"><div class="spinner"></div><p>Loading keys...</p></div>';
+
+                // Get the keys from the API
+                const keyEntries = await API.AMF.getShardKeys(shardId);
+
+                // Convert the array of objects to an array of [key, value] pairs
+                const keyValuePairs = keyEntries.map(entry => [entry.key, entry.value]);
+
+                console.log(`Found ${keyValuePairs.length} keys in shard ${shardId}`);
+
+                // Clear the container
+                keysContainer.innerHTML = '';
+
+                if (keyValuePairs.length === 0) {
+                    keysContainer.innerHTML = '<p class="no-keys">No keys found in this shard.</p>';
+                    return;
+                }
+
+                // Create a list to display the keys
+                const keyList = document.createElement('ul');
+                keyList.className = 'key-list';
+
+                // Add each key-value pair to the list
+                keyValuePairs.forEach(([key, value]) => {
+                    const keyItem = document.createElement('li');
+                    keyItem.className = 'key-item';
+                    keyItem.innerHTML = `
+                        <div class="key">${key}</div>
+                        <div class="value">${value}</div>
+                        <button class="copy-btn" data-key="${key}" title="Copy key">📋</button>
+                    `;
+
+                    // Add click event to copy the key
+                    const copyBtn = keyItem.querySelector('.copy-btn');
+                    copyBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const keyToCopy = e.target.getAttribute('data-key');
+                        navigator.clipboard.writeText(keyToCopy)
+                            .then(() => {
+                                // Show a temporary "Copied!" message
+                                const originalText = e.target.textContent;
+                                e.target.textContent = '✓';
+                                e.target.style.color = 'var(--success-color)';
+
+                                setTimeout(() => {
+                                    e.target.textContent = originalText;
+                                    e.target.style.color = '';
+                                }, 1000);
+                            })
+                            .catch(err => {
+                                console.error('Failed to copy key:', err);
+                            });
+                    });
+
+                    // Add click event to use this key for proof verification
+                    keyItem.addEventListener('click', () => {
+                        // Fill the proof verification form with this key
+                        const proofShardIdInput = document.getElementById('proofShardId');
+                        const proofKeyInput = document.getElementById('proofKey');
+
+                        if (proofShardIdInput && proofKeyInput) {
+                            proofShardIdInput.value = shardId;
+                            proofKeyInput.value = key;
+
+                            // Show the verify proof modal
+                            document.getElementById('verifyProofModal').classList.add('show');
+                        }
+                    });
+
+                    keyList.appendChild(keyItem);
+                });
+
+                // Add the key list to the container
+                keysContainer.appendChild(keyList);
+
+                // Add a note about clicking keys
+                const note = document.createElement('p');
+                note.className = 'key-note';
+                note.style.marginTop = '10px';
+                note.style.fontSize = '12px';
+                note.style.color = '#666';
+                note.innerHTML = 'Click on a key to use it for proof verification. Click the 📋 icon to copy the key.';
+                keysContainer.appendChild(note);
+
+            } catch (error) {
+                const keysContainer = document.getElementById('shardKeysContainer');
+                if (keysContainer) {
+                    keysContainer.innerHTML = `<p class="error-message">Failed to load keys: ${error.message}</p>`;
+                }
+                console.error('Shard keys loading error:', error);
+            }
+        }
+
+        // Close modal by ID
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Populate shard dropdown
+        function populateShardDropdowns() {
+            if (!state.forestStructure) return;
+
+            // Get all shard IDs
+            const shardIds = state.forestStructure.shards.map(shard => shard.id);
+
+            // Populate parent shard dropdown
+            const parentShardSelect = document.getElementById('parentShardId');
+            parentShardSelect.innerHTML = '';
+
+            shardIds.forEach(id => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = id;
+                parentShardSelect.appendChild(option);
+            });
+
+            // Populate proof shard dropdown
+            const proofShardSelect = document.getElementById('proofShardId');
+            proofShardSelect.innerHTML = '';
+
+            shardIds.forEach(id => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = id;
+                proofShardSelect.appendChild(option);
+            });
+        }
+
+        // Add a new shard
+        async function addShard(parentId, initialKeys) {
+            try {
+                console.log("Adding new shard with parent:", parentId, "and keys:", initialKeys);
+
+                // Get the actual parent shard from the blockchain service
+                const parentShardInBlockchain = BlockchainService.blockchain.shards[parentId];
+                if (!parentShardInBlockchain) {
+                    throw new Error(`Parent shard ${parentId} not found in blockchain`);
+                }
+
+                // Get parent shard from forest structure
+                const parentShardInForest = state.forestStructure.shards.find(s => s.id === parentId);
+                if (!parentShardInForest) {
+                    throw new Error(`Parent shard ${parentId} not found in forest structure`);
+                }
+
+                // Create a new shard ID based on parent
+                // Count existing children in the blockchain service
+                const existingChildren = parentShardInBlockchain.childIds || [];
+                const childCount = existingChildren.length;
+
+                // Create a unique shard ID that follows the parent's naming convention
+                let newShardId;
+
+                if (parentId === "Root Shard") {
+                    // For root shard, create children like "Shard-X"
+                    const nextChildNumber = childCount + 1;
+                    newShardId = `Shard-${nextChildNumber + 3}`; // +3 because we already have Shard-1, Shard-2, Shard-3
+                } else {
+                    // For other shards, create children like "Shard-1-X"
+                    const nextChildNumber = childCount + 1;
+                    newShardId = `${parentId}-${nextChildNumber}`;
+                }
+
+                console.log("Generated new shard ID:", newShardId);
+
+
+                // Get parent level and calculate new level
+                const newLevel = (parentShardInForest.level || 0) + 1;
+
+                // Create new shard for blockchain
+                const newShardForBlockchain = {
+                    id: newShardId,
+                    parentId: parentId,
+                    childIds: [],
+                    creationTime: Date.now(),
+                    keys: initialKeys,
+                    hash: BlockchainService.generateRandomHash(),
+                    lastUpdated: Date.now(),
+                    status: 'Active',
+                    operations: [
+                        {
+                            type: 'Creation',
+                            timestamp: Date.now()
+                        }
+                    ]
+                };
+
+                // Create new shard for forest structure
+                const newShardForForest = {
+                    id: newShardId,
+                    parentId: parentId,
+                    level: newLevel,
+                    keys: initialKeys,
+                    hash: newShardForBlockchain.hash
+                };
+
+                console.log("New shard created:", newShardForBlockchain);
+
+                // Add to blockchain service
+                BlockchainService.blockchain.shards[newShardId] = newShardForBlockchain;
+
+                // Update parent shard's childIds in blockchain
+                if (!parentShardInBlockchain.childIds) {
+                    parentShardInBlockchain.childIds = [];
+                }
+                parentShardInBlockchain.childIds.push(newShardId);
+                console.log("Updated parent shard childIds:", parentShardInBlockchain.childIds);
+
+                // Add to forest structure
+                state.forestStructure.shards.push(newShardForForest);
+
+                // Update AMF stats
+                BlockchainService.amfStats.totalShards++;
+                BlockchainService.amfStats.activeShards++;
+                BlockchainService.amfStats.shardDepth = Math.max(BlockchainService.amfStats.shardDepth, newLevel);
+
+                console.log("AMF stats updated. Total shards:", BlockchainService.amfStats.totalShards);
+
+                return newShardForBlockchain;
+            } catch (error) {
+                console.error('Error adding shard:', error);
+                throw error;
+            }
+        }
+
+        // Verify a proof
+        async function verifyProof(shardId, key) {
+            try {
+                // Get the proof for the key in the shard
+                const proof = await API.AMF.getProof(shardId, key);
+                console.log("Generated proof:", proof);
+
+                // Introduce a delay to simulate verification processing
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Verify the proof
+                const result = await API.AMF.verifyProof({
+                    shardId: proof.shardId,
+                    key: proof.key,
+                    value: proof.value,
+                    proof: proof.proof
+                });
+
+                console.log("Verification result:", result);
+
+                // Add operation to shard with more detailed information
+                const shard = BlockchainService.blockchain.shards[shardId];
+                if (shard) {
+                    shard.operations.push({
+                        type: 'Proof Verification',
+                        timestamp: Date.now(),
+                        key: key,
+                        result: result.valid ? 'Valid' : 'Invalid',
+                        details: result.details || {}
+                    });
+                }
+
+                // Return combined result
+                return {
+                    ...proof,
+                    ...result,
+                    timestamp: new Date().toISOString()
+                };
+            } catch (error) {
+                console.error('Error verifying proof:', error);
+                throw error;
+            }
+        }
+
+        // Handle refresh button
+        document.querySelector('.visualization-controls .btn-primary').addEventListener('click', async function() {
+            await loadForestStructure();
+        });
+
+        // Handle add shard button
+        document.querySelector('.visualization-controls .btn-add').addEventListener('click', function() {
+            // Populate shard dropdown
+            populateShardDropdowns();
+
+            // Reset form
+            document.getElementById('addShardForm').reset();
+
+            // Clear result container
+            const resultContainer = document.getElementById('addShardResult');
+            resultContainer.className = 'add-shard-result';
+            resultContainer.style.display = 'none';
+
+            // Show modal
+            document.getElementById('addShardModal').classList.add('show');
+        });
+
+        // Handle verify proof button
+        document.querySelector('.visualization-controls .btn-verify').addEventListener('click', function() {
+            // Populate shard dropdown
+            populateShardDropdowns();
+
+            // Reset form
+            document.getElementById('verifyProofForm').reset();
+
+            // Clear result container
+            const resultContainer = document.getElementById('verifyProofResult');
+            resultContainer.className = 'verify-proof-result';
+            resultContainer.style.display = 'none';
+
+            // Show modal
+            document.getElementById('verifyProofModal').classList.add('show');
+        });
+
+        // Handle add shard form submission
+        document.getElementById('submitAddShard').addEventListener('click', async function() {
+            // Get form values
+            const parentId = document.getElementById('parentShardId').value;
+            const initialKeys = parseInt(document.getElementById('initialKeys').value);
+
+            // Get result container
+            const resultContainer = document.getElementById('addShardResult');
+            resultContainer.className = 'add-shard-result';
+            resultContainer.style.display = 'none';
+
+            // Validate form
+            if (!parentId) {
+                resultContainer.innerHTML = 'Please select a parent shard';
+                resultContainer.className = 'add-shard-result error';
+                resultContainer.style.display = 'block';
+                return;
+            }
+
+            if (isNaN(initialKeys) || initialKeys < 1 || initialKeys > 1000) {
+                resultContainer.innerHTML = 'Initial keys must be between 1 and 1000';
+                resultContainer.className = 'add-shard-result error';
+                resultContainer.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Show loading state
+                const btn = document.getElementById('submitAddShard');
+                const originalText = btn.textContent;
+                btn.textContent = 'Adding...';
+                btn.disabled = true;
+
+                // Add shard
+                const newShard = await addShard(parentId, initialKeys);
+
+                // Show success message
+                resultContainer.innerHTML = `
+                    <strong>Shard Added Successfully!</strong><br>
+                    Shard ID: ${newShard.id}<br>
+                    Parent: ${newShard.parentId}<br>
+                    Keys: ${newShard.keys}<br>
+                    Level: ${newShard.level}
+                `;
+                resultContainer.className = 'add-shard-result success';
+                resultContainer.style.display = 'block';
+
+                // Reload forest structure and stats after a short delay
+                setTimeout(async () => {
+                    await loadForestStructure();
+                    await loadAMFStats();
+
+                    // Close modal
+                    closeModal('addShardModal');
+                }, 2000);
+
+            } catch (error) {
+                // Show error message
+                resultContainer.innerHTML = `
+                    <strong>Failed to Add Shard!</strong><br>
+                    Error: ${error.message}
+                `;
+                resultContainer.className = 'add-shard-result error';
+                resultContainer.style.display = 'block';
+
+                console.error('Shard addition error:', error);
+            } finally {
+                // Reset button
+                const btn = document.getElementById('submitAddShard');
+                btn.textContent = 'Add Shard';
+                btn.disabled = false;
+            }
+        });
+
+        // Handle verify proof form submission
+        document.getElementById('submitVerifyProof').addEventListener('click', async function() {
+            // Get form values
+            const shardId = document.getElementById('proofShardId').value;
+            const key = document.getElementById('proofKey').value;
+
+            // Get result container
+            const resultContainer = document.getElementById('verifyProofResult');
+            resultContainer.className = 'verify-proof-result';
+            resultContainer.style.display = 'none';
+
+            // Validate form
+            if (!shardId) {
+                resultContainer.innerHTML = 'Please select a shard';
+                resultContainer.className = 'verify-proof-result error';
+                resultContainer.style.display = 'block';
+                return;
+            }
+
+            if (!key) {
+                resultContainer.innerHTML = 'Please enter a key to verify';
+                resultContainer.className = 'verify-proof-result error';
+                resultContainer.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Show loading state
+                const btn = document.getElementById('submitVerifyProof');
+                const originalText = btn.textContent;
+                btn.textContent = 'Verifying...';
+                btn.disabled = true;
+
+                // Verify proof
+                const result = await verifyProof(shardId, key);
+
+                // Show verification result with more details
+                resultContainer.innerHTML = `
+                    <strong>Proof Verification Result:</strong><br>
+                    <div class="proof-result ${result.valid ? 'valid-proof' : 'invalid-proof'}">
+                        <div class="proof-status">
+                            <span class="status-icon">${result.valid ? '✓' : '✗'}</span>
+                            <span class="status-text">${result.valid ? 'VALID' : 'INVALID'}</span>
+                        </div>
+                        <div class="proof-details">
+                            <div class="proof-detail-row">
+                                <span class="detail-label">Shard ID:</span>
+                                <span class="detail-value">${result.shardId}</span>
+                            </div>
+                            <div class="proof-detail-row">
+                                <span class="detail-label">Key:</span>
+                                <span class="detail-value">${result.key}</span>
+                            </div>
+                            <div class="proof-detail-row">
+                                <span class="detail-label">Value:</span>
+                                <span class="detail-value">${result.value}</span>
+                            </div>
+                            <div class="proof-detail-row">
+                                <span class="detail-label">Timestamp:</span>
+                                <span class="detail-value">${result.timestamp || new Date().toISOString()}</span>
+                            </div>
+                            <div class="proof-detail-row">
+                                <span class="detail-label">Proof Hash:</span>
+                                <span class="detail-value proof-hash">${Utils.formatHash(result.proof)}</span>
+                            </div>
+                            ${result.error ? `
+                            <div class="proof-detail-row error-row">
+                                <span class="detail-label">Error:</span>
+                                <span class="detail-value error-value">${result.error}</span>
+                            </div>
+                            ` : ''}
+                            ${result.details ? `
+                            <div class="proof-detail-row">
+                                <span class="detail-label">Details:</span>
+                                <div class="detail-value">
+                                    <ul class="details-list">
+                                        ${Object.entries(result.details).map(([key, value]) => `
+                                            <li><strong>${key}:</strong> ${value}</li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                // Add CSS for the new proof result display
+                if (!document.getElementById('proof-result-styles')) {
+                    const styleEl = document.createElement('style');
+                    styleEl.id = 'proof-result-styles';
+                    styleEl.textContent = `
+                        .proof-result {
+                            border-radius: 8px;
+                            padding: 15px;
+                            margin-top: 10px;
+                        }
+                        .valid-proof {
+                            background-color: rgba(56, 176, 0, 0.1);
+                            border: 1px solid var(--success-color);
+                        }
+                        .invalid-proof {
+                            background-color: rgba(255, 0, 110, 0.1);
+                            border: 1px solid var(--danger-color);
+                        }
+                        .proof-status {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 15px;
+                            padding-bottom: 10px;
+                            border-bottom: 1px solid rgba(0,0,0,0.1);
+                        }
+                        .status-icon {
+                            font-size: 24px;
+                            margin-right: 10px;
+                        }
+                        .valid-proof .status-icon {
+                            color: var(--success-color);
+                        }
+                        .invalid-proof .status-icon {
+                            color: var(--danger-color);
+                        }
+                        .status-text {
+                            font-size: 18px;
+                            font-weight: bold;
+                        }
+                        .valid-proof .status-text {
+                            color: var(--success-color);
+                        }
+                        .invalid-proof .status-text {
+                            color: var(--danger-color);
+                        }
+                        .proof-details {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 8px;
+                        }
+                        .proof-detail-row {
+                            display: flex;
+                            flex-wrap: wrap;
+                        }
+                        .detail-label {
+                            width: 120px;
+                            font-weight: 600;
+                            color: #555;
+                        }
+                        .detail-value {
+                            flex: 1;
+                            word-break: break-all;
+                        }
+                        .proof-hash {
+                            font-family: monospace;
+                            font-size: 0.9em;
+                        }
+                        .error-row {
+                            color: var(--danger-color);
+                        }
+                        .error-value {
+                            font-weight: 500;
+                        }
+                        .details-list {
+                            list-style: none;
+                            padding-left: 0;
+                        }
+                        .details-list li {
+                            margin-bottom: 5px;
+                        }
+                    `;
+                    document.head.appendChild(styleEl);
+                }
+
+                resultContainer.className = 'verify-proof-result';
+                resultContainer.style.display = 'block';
+
+                // Reload shard operations if the current shard is selected
+                if (state.selectedShard && state.selectedShard.id === shardId) {
+                    await loadShardOperations(shardId);
+                }
+
+            } catch (error) {
+                // Show error message
+                resultContainer.innerHTML = `
+                    <strong>Failed to Verify Proof!</strong><br>
+                    Error: ${error.message}
+                `;
+                resultContainer.className = 'verify-proof-result error';
+                resultContainer.style.display = 'block';
+
+                console.error('Proof verification error:', error);
+            } finally {
+                // Reset button
+                const btn = document.getElementById('submitVerifyProof');
+                btn.textContent = 'Verify Proof';
+                btn.disabled = false;
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Check node status
+                const status = await API.Status.getStatus();
+
+                if (status.status === 'running') {
+                    // Force update AMF stats first to ensure they're accurate
+                    // This will create new shards if needed based on transaction volume
+                    try {
+                        console.log("Forcing AMF stats update on page load");
+                        await API.AMF.updateAMF();
+                    } catch (amfError) {
+                        console.error('Error updating AMF stats on page load:', amfError);
+                    }
+
+                    // Load AMF stats
+                    await loadAMFStats();
+
+                    // Load forest structure
+                    await loadForestStructure();
+
+                    // Set up periodic refresh of AMF stats
+                    setInterval(async () => {
+                        try {
+                            await loadAMFStats();
+                        } catch (refreshError) {
+                            console.error('Error refreshing AMF stats:', refreshError);
+                        }
+                    }, 5000); // Refresh every 5 seconds
+                } else {
+                    Utils.showError('Blockchain node is not running. Status: ' + status.status);
+                }
+            } catch (error) {
+                Utils.showError('Failed to connect to blockchain node. Please make sure the node is running.');
+                console.error('Status check error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

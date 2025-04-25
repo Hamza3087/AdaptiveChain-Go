@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocks - Advanced Blockchain</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --success-color: #38b000;
+            --warning-color: #ffbe0b;
+            --danger-color: #ff006e;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            margin-left: 10px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a75e6;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Page Content */
+        .page-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-label {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background-color: white;
+        }
+
+        /* Blocks Table */
+        .blocks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .blocks-table th, .blocks-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .blocks-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .blocks-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .hash-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: monospace;
+        }
+
+        .block-number {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pagination-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination-item:hover {
+            background-color: #f0f7ff;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .pagination-item.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Block Details */
+        .block-details {
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 30px;
+        }
+
+        .block-details-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .detail-card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            width: 200px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .monospace {
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .transactions-list {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .transaction-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .transaction-id {
+            font-family: monospace;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+        }
+
+        .transaction-details {
+            display: flex;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .transaction-from, .transaction-to {
+            margin-right: 20px;
+        }
+
+        .loading-placeholder {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .no-transactions {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">⛓️</span>
+                    <h1>Advanced Blockchain</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, Admin</span>
+                    <button class="btn btn-primary">Connect Wallet</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="index.html"><i>📊</i> Dashboard</a></li>
+                    <li><a href="blocks.html" class="active"><i>📦</i> Blocks</a></li>
+                    <li><a href="transactions.html"><i>💸</i> Transactions</a></li>
+                    <li><a href="nodes.html"><i>👥</i> Nodes</a></li>
+                    <li><a href="amf.html"><i>🌳</i> AMF</a></li>
+                </ul>
+            </div>
+
+            <div class="page-content">
+                <h2 class="page-title"><i>📦</i> Blocks Explorer</h2>
+
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search by block number, hash, or transaction hash">
+                    <button class="search-btn">Search</button>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Show:</span>
+                        <select class="filter-select">
+                            <option>All Blocks</option>
+                            <option>Last 24 hours</option>
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Shard:</span>
+                        <select class="filter-select">
+                            <option>All Shards</option>
+                            <option>Shard 1</option>
+                            <option>Shard 2</option>
+                            <option>Shard 3</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Items per page:</span>
+                        <select class="filter-select">
+                            <option>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="blocks-table">
+                    <thead>
+                        <tr>
+                            <th>Block</th>
+                            <th>Age</th>
+                            <th>Transactions</th>
+                            <th>Shard ID</th>
+                            <th>Size</th>
+                            <th>Hash</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="block-number">12,345</span></td>
+                            <td>2 mins ago</td>
+                            <td>178</td>
+                            <td>1</td>
+                            <td>32.5 KB</td>
+                            <td class="hash-cell">0x4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,344</span></td>
+                            <td>5 mins ago</td>
+                            <td>167</td>
+                            <td>2</td>
+                            <td>30.2 KB</td>
+                            <td class="hash-cell">0x5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,343</span></td>
+                            <td>8 mins ago</td>
+                            <td>189</td>
+                            <td>1</td>
+                            <td>33.7 KB</td>
+                            <td class="hash-cell">0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,342</span></td>
+                            <td>12 mins ago</td>
+                            <td>142</td>
+                            <td>3</td>
+                            <td>28.9 KB</td>
+                            <td class="hash-cell">0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,341</span></td>
+                            <td>15 mins ago</td>
+                            <td>156</td>
+                            <td>2</td>
+                            <td>29.3 KB</td>
+                            <td class="hash-cell">0x8a7d953a2bd9c3b4d5d9c6a21f4f5c7b9e8d7f6a</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,340</span></td>
+                            <td>18 mins ago</td>
+                            <td>163</td>
+                            <td>1</td>
+                            <td>30.1 KB</td>
+                            <td class="hash-cell">0x9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,339</span></td>
+                            <td>22 mins ago</td>
+                            <td>175</td>
+                            <td>3</td>
+                            <td>31.8 KB</td>
+                            <td class="hash-cell">0xa9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,338</span></td>
+                            <td>25 mins ago</td>
+                            <td>149</td>
+                            <td>2</td>
+                            <td>28.5 KB</td>
+                            <td class="hash-cell">0xb0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,337</span></td>
+                            <td>28 mins ago</td>
+                            <td>182</td>
+                            <td>1</td>
+                            <td>32.9 KB</td>
+                            <td class="hash-cell">0xc1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2</td>
+                        </tr>
+                        <tr>
+                            <td><span class="block-number">12,336</span></td>
+                            <td>32 mins ago</td>
+                            <td>158</td>
+                            <td>3</td>
+                            <td>29.7 KB</td>
+                            <td class="hash-cell">0xd2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="pagination-item">«</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">5</div>
+                    <div class="pagination-item">»</div>
+                </div>
+
+                <div class="block-details">
+                    <h3 class="block-details-title">Block #12,345 Details</h3>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Block Height</div>
+                            <div class="detail-value">12,345</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">2023-06-15 10:35:07 UTC (2 mins ago)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Transactions</div>
+                            <div class="detail-value">178</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Shard ID</div>
+                            <div class="detail-value">1</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Size</div>
+                            <div class="detail-value">32.5 KB</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Hash</div>
+                            <div class="detail-value monospace">0x4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Previous Block Hash</div>
+                            <div class="detail-value monospace">0x5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Merkle Root</div>
+                            <div class="detail-value monospace">0xe3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">State Root</div>
+                            <div class="detail-value monospace">0xf4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5</div>
+                        </div>
+                    </div>
+
+                    <h4 class="transactions-title">Transactions in Block #<span class="block-number-ref">12,345</span></h4>
+
+                    <div class="transactions-list">
+                        <div class="transaction-item">
+                            <div class="transaction-header">
+                                <div class="transaction-id">0x8a7d953a2bd9c3b4d5d9c6a21f4f5c7b9e8d7f6a</div>
+                                <div class="transaction-amount">1.25 ETH</div>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-from">From: 0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</div>
+                                <div class="transaction-to">To: 0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b</div>
+                                <div class="transaction-time">2 mins ago</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-header">
+                                <div class="transaction-id">0x7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c</div>
+                                <div class="transaction-amount">0.75 ETH</div>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-from">From: 0x5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e</div>
+                                <div class="transaction-to">To: 0x4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c</div>
+                                <div class="transaction-time">2 mins ago</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-header">
+                                <div class="transaction-id">0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b</div>
+                                <div class="transaction-amount">2.50 ETH</div>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-from">From: 0x3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4</div>
+                                <div class="transaction-to">To: 0x2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3</div>
+                                <div class="transaction-time">3 mins ago</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-header">
+                                <div class="transaction-id">0x5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e</div>
+                                <div class="transaction-amount">0.33 ETH</div>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-from">From: 0x1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2</div>
+                                <div class="transaction-to">To: 0x0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a291</div>
+                                <div class="transaction-time">3 mins ago</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-header">
+                                <div class="transaction-id">0x4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c</div>
+                                <div class="transaction-amount">1.05 ETH</div>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-from">From: 0xe9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d</div>
+                                <div class="transaction-to">To: 0xd8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c</div>
+                                <div class="transaction-time">4 mins ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/blockchain-service.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/responsive.js"></script>
+    <script>
+        // Global state
+        const state = {
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 10,
+            filters: {},
+            selectedBlock: null
+        };
+
+        // Load blocks data
+        async function loadBlocks() {
+            try {
+                // Show loading state
+                const tableBody = document.querySelector('.blocks-table tbody');
+                Utils.showLoading(tableBody);
+
+                // Get filters
+                const timeFilter = document.querySelector('.filter-select:nth-of-type(1)')?.value || 'All Blocks';
+                const shardFilter = document.querySelector('.filter-select:nth-of-type(2)')?.value || 'All Shards';
+                state.pageSize = parseInt(document.querySelector('.filter-select:nth-of-type(3)')?.value || '10');
+
+                // Build filters object
+                state.filters = {};
+                if (timeFilter !== 'All Blocks') {
+                    state.filters.period = timeFilter.toLowerCase().replace(' ', '_');
+                }
+                if (shardFilter !== 'All Shards') {
+                    state.filters.shardId = shardFilter.replace('Shard ', '');
+                }
+
+                // Fetch blocks
+                const response = await API.Blocks.getBlocks(state.currentPage, state.pageSize, state.filters);
+                const blocks = response.blocks;
+                state.totalPages = response.totalPages;
+
+                // Update table
+                tableBody.innerHTML = '';
+
+                blocks.forEach(block => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><span class="block-number">${Utils.formatNumber(block.number)}</span></td>
+                        <td>${Utils.formatRelativeTime(block.timestamp)}</td>
+                        <td>${block.transactions}</td>
+                        <td>${block.shardId}</td>
+                        <td>${Utils.formatFileSize(block.size)}</td>
+                        <td class="hash-cell">${Utils.formatHash(block.hash)}</td>
+                    `;
+
+                    // Add click event to show block details
+                    row.addEventListener('click', () => {
+                        loadBlockDetails(block.number);
+                    });
+
+                    tableBody.appendChild(row);
+                });
+
+                // Update pagination
+                updatePagination();
+
+            } catch (error) {
+                Utils.showError('Failed to load blocks: ' + error.message);
+                console.error('Blocks loading error:', error);
+            }
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const paginationContainer = document.querySelector('.pagination');
+            paginationContainer.innerHTML = '';
+
+            const pagination = Utils.createPagination(state.currentPage, state.totalPages, (page) => {
+                state.currentPage = page;
+                loadBlocks();
+            });
+
+            paginationContainer.appendChild(pagination);
+        }
+
+        // Load block details
+        async function loadBlockDetails(blockId) {
+            try {
+                // Get the details container
+                const detailsContainer = document.querySelector('.block-details');
+                if (!detailsContainer) {
+                    console.error('Block details container not found');
+                    Utils.showError('Failed to load block details: Block details container not found');
+                    return;
+                }
+
+                // Show loading state
+                Utils.showLoading(detailsContainer);
+
+                // Fetch block details
+                const block = await API.Blocks.getBlock(blockId);
+                state.selectedBlock = block;
+
+                // Rebuild the block details section
+                detailsContainer.innerHTML = `
+                    <h3 class="block-details-title">Block #${Utils.formatNumber(block.number)} Details</h3>
+
+                    <div class="detail-card">
+                        <div class="detail-row">
+                            <div class="detail-label">Block Height</div>
+                            <div class="detail-value">${Utils.formatNumber(block.number)}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">${Utils.formatTimestamp(block.timestamp)} (${Utils.formatRelativeTime(block.timestamp)})</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Transactions</div>
+                            <div class="detail-value">${block.transactions}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Shard ID</div>
+                            <div class="detail-value">${block.shardId}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Size</div>
+                            <div class="detail-value">${Utils.formatFileSize(block.size)}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Hash</div>
+                            <div class="detail-value monospace">${block.hash}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Previous Block Hash</div>
+                            <div class="detail-value monospace">${block.previousHash}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Merkle Root</div>
+                            <div class="detail-value monospace">${block.merkleRoot}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">State Root</div>
+                            <div class="detail-value monospace">${block.stateRoot}</div>
+                        </div>
+                    </div>
+
+                    <h4 class="transactions-title">Transactions in Block #<span class="block-number-ref">${Utils.formatNumber(block.number)}</span></h4>
+
+                    <div class="transactions-list">
+                        <div class="loading-placeholder">Loading transactions...</div>
+                    </div>
+                `;
+
+                // Load block transactions
+                await loadBlockTransactions(blockId);
+
+                // Scroll to block details
+                detailsContainer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                Utils.showError('Failed to load block details: ' + error.message);
+                console.error('Block details loading error:', error);
+            }
+        }
+
+        // Load block transactions
+        async function loadBlockTransactions(blockId) {
+            try {
+                // Get the transactions container
+                const transactionsContainer = document.querySelector('.transactions-list');
+                if (!transactionsContainer) {
+                    console.error('Transactions container element not found');
+                    return;
+                }
+
+                try {
+                    // Fetch block transactions
+                    const transactions = await API.Blocks.getBlockTransactions(blockId);
+
+                    // Update transactions list
+                    transactionsContainer.innerHTML = '';
+
+                    if (transactions.length === 0) {
+                        transactionsContainer.innerHTML = '<p class="no-transactions">No transactions in this block.</p>';
+                        return;
+                    }
+
+                    transactions.forEach(tx => {
+                        const txElement = document.createElement('div');
+                        txElement.className = 'transaction-item';
+                        txElement.innerHTML = `
+                            <div class="transaction-header">
+                                <div class="transaction-id">${Utils.formatHash(tx.hash)}</div>
+                                <div class="transaction-amount">${Utils.formatAmount(tx.amount)}</div>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-from">From: ${Utils.formatHash(tx.from)}</div>
+                                <div class="transaction-to">To: ${Utils.formatHash(tx.to)}</div>
+                                <div class="transaction-time">${Utils.formatRelativeTime(tx.timestamp)}</div>
+                            </div>
+                        `;
+
+                        // Add click event to navigate to transaction details
+                        txElement.addEventListener('click', () => {
+                            window.location.href = `transactions.html?tx=${tx.hash}`;
+                        });
+
+                        transactionsContainer.appendChild(txElement);
+                    });
+                } catch (txError) {
+                    transactionsContainer.innerHTML = '<p class="error-message">Failed to load transactions: ' + txError.message + '</p>';
+                    console.error('Transaction loading error:', txError);
+                }
+
+            } catch (error) {
+                Utils.showError('Failed to load block transactions: ' + error.message);
+                console.error('Block transactions loading error:', error);
+            }
+        }
+
+        // Handle search
+        document.querySelector('.search-btn').addEventListener('click', async function() {
+            const searchInput = document.querySelector('.search-input').value.trim();
+
+            if (!searchInput) {
+                Utils.showError('Please enter a block number, hash, or transaction hash');
+                return;
+            }
+
+            try {
+                // Try to load block by number or hash
+                await loadBlockDetails(searchInput);
+            } catch (error) {
+                try {
+                    // If not found, try to find transaction
+                    const transaction = await API.Transactions.getTransaction(searchInput);
+
+                    // If transaction found, navigate to transaction page
+                    window.location.href = `transactions.html?tx=${transaction.hash}`;
+                } catch (txError) {
+                    Utils.showError('No block or transaction found with the given search term');
+                    console.error('Search error:', error, txError);
+                }
+            }
+        });
+
+        // Handle filter changes
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', () => {
+                state.currentPage = 1; // Reset to first page
+                loadBlocks();
+            });
+        });
+
+        // Check URL parameters for block ID
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const blockId = urlParams.get('block');
+
+            if (blockId) {
+                loadBlockDetails(blockId);
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Check node status
+                const status = await API.Status.getStatus();
+
+                if (status.status === 'running') {
+                    // Load blocks
+                    await loadBlocks();
+
+                    // Check URL parameters
+                    checkUrlParams();
+                } else {
+                    Utils.showError('Blockchain node is not running. Status: ' + status.status);
+                }
+            } catch (error) {
+                Utils.showError('Failed to connect to blockchain node. Please make sure the node is running.');
+                console.error('Status check error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

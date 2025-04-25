@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodes - Advanced Blockchain</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --success-color: #38b000;
+            --warning-color: #ffbe0b;
+            --danger-color: #ff006e;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            margin-left: 10px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a75e6;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Page Content */
+        .page-content {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        /* Network Stats */
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .card-title {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .stat-card .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .stat-card .card-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .card-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-card .card-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card .card-change.negative {
+            color: var(--danger-color);
+        }
+
+        .icon-primary {
+            background-color: rgba(58, 134, 255, 0.1);
+            color: var(--primary-color);
+        }
+
+        .icon-secondary {
+            background-color: rgba(131, 56, 236, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .icon-success {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success-color);
+        }
+
+        .icon-warning {
+            background-color: rgba(255, 190, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .icon-danger {
+            background-color: rgba(255, 0, 110, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Network Map */
+        .network-map {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .map-container {
+            height: 400px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #888;
+            font-size: 18px;
+        }
+
+        /* Nodes Table */
+        .nodes-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .nodes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nodes-title {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .nodes-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .nodes-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-add {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #2d9000;
+        }
+
+        .nodes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .nodes-table th, .nodes-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nodes-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .nodes-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .node-id {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .node-address {
+            font-family: monospace;
+        }
+
+        .node-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-offline {
+            background-color: rgba(255, 0, 110, 0.1);
+            color: var(--danger-color);
+        }
+
+        .status-syncing {
+            background-color: rgba(255, 190, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .node-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 3px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-view {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-offline {
+            background-color: #6c757d; /* Gray */
+            color: white;
+        }
+
+        .btn-restart {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-remove {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Node Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #f0f2f5;
+            color: #555;
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e2e5;
+        }
+
+        .add-node-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            display: none;
+        }
+
+        .add-node-result.success {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+
+        .add-node-result.error {
+            background-color: rgba(255, 0, 110, 0.1);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            display: block;
+        }
+
+        .form-helper {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Node Details */
+        .node-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-group {
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            font-family: monospace;
+        }
+
+        .node-metrics {
+            margin-top: 20px;
+        }
+
+        .metric-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .metric-card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 15px;
+        }
+
+        .metric-name {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .node-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .network-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">⛓️</span>
+                    <h1>Advanced Blockchain</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, Admin</span>
+                    <button class="btn btn-primary">Connect Wallet</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="index.html"><i>📊</i> Dashboard</a></li>
+                    <li><a href="blocks.html"><i>📦</i> Blocks</a></li>
+                    <li><a href="transactions.html"><i>💸</i> Transactions</a></li>
+                    <li><a href="nodes.html" class="active"><i>👥</i> Nodes</a></li>
+                    <li><a href="amf.html"><i>🌳</i> AMF</a></li>
+                </ul>
+            </div>
+
+            <div class="page-content">
+                <h2 class="page-title"><i>👥</i> Network Nodes</h2>
+
+                <div class="network-stats">
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">TOTAL NODES</h3>
+                            <div class="card-icon icon-primary">👥</div>
+                        </div>
+                        <div class="card-value">256</div>
+                        <div class="card-change positive">
+                            <span>↑ 1.8%</span> from yesterday
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">ACTIVE NODES</h3>
+                            <div class="card-icon icon-success">✅</div>
+                        </div>
+                        <div class="card-value">243</div>
+                        <div class="card-change positive">
+                            <span>↑ 0.5%</span> from yesterday
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">NETWORK LATENCY</h3>
+                            <div class="card-icon icon-warning">⏱️</div>
+                        </div>
+                        <div class="card-value">125ms</div>
+                        <div class="card-change negative">
+                            <span>↑ 3.2%</span> from yesterday
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-header">
+                            <h3 class="card-title">BYZANTINE NODES</h3>
+                            <div class="card-icon icon-danger">⚠️</div>
+                        </div>
+                        <div class="card-value">2</div>
+                        <div class="card-change negative">
+                            <span>↑ 100%</span> from yesterday
+                        </div>
+                    </div>
+                </div>
+
+                <div class="network-map">
+                    <div class="map-header">
+                        <h3 class="nodes-title"><i>🌐</i> Network Map</h3>
+                        <div class="map-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="showOfflineNodes" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Show Offline Nodes</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <div class="map-placeholder">
+                            [Interactive Network Map Visualization]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nodes-container">
+                    <div class="nodes-header">
+                        <h3 class="nodes-title"><i>👥</i> Node List</h3>
+                        <div class="nodes-actions">
+                            <button class="btn btn-add">Add Node</button>
+                        </div>
+                    </div>
+
+                    <table class="nodes-table">
+                        <thead>
+                            <tr>
+                                <th>Node ID</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Uptime</th>
+                                <th>Peers</th>
+                                <th>Consistency Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="node-id">node-1</span></td>
+                                <td><span class="node-address">127.0.0.1:8000</span></td>
+                                <td><span class="node-status status-online">Online</span></td>
+                                <td>3d 12h 45m</td>
+                                <td>32</td>
+                                <td>Strong</td>
+                                <td>
+                                    <div class="node-actions">
+                                        <button class="btn-action btn-view" data-node-id="node-1">View</button>
+                                        <button class="btn-action btn-restart" data-node-id="node-1">Restart</button>
+                                        <button class="btn-action btn-remove" data-node-id="node-1">Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="node-id">node-2</span></td>
+                                <td><span class="node-address">127.0.0.1:8001</span></td>
+                                <td><span class="node-status status-online">Online</span></td>
+                                <td>2d 8h 15m</td>
+                                <td>28</td>
+                                <td>Strong</td>
+                                <td>
+                                    <div class="node-actions">
+                                        <button class="btn-action btn-view" data-node-id="node-2">View</button>
+                                        <button class="btn-action btn-restart" data-node-id="node-2">Restart</button>
+                                        <button class="btn-action btn-remove" data-node-id="node-2">Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="node-id">node-3</span></td>
+                                <td><span class="node-address">127.0.0.1:8002</span></td>
+                                <td><span class="node-status status-syncing">Syncing</span></td>
+                                <td>1d 5h 30m</td>
+                                <td>25</td>
+                                <td>Causal</td>
+                                <td>
+                                    <div class="node-actions">
+                                        <button class="btn-action btn-view" data-node-id="node-3">View</button>
+                                        <button class="btn-action btn-restart" data-node-id="node-3">Restart</button>
+                                        <button class="btn-action btn-remove" data-node-id="node-3">Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="node-id">node-4</span></td>
+                                <td><span class="node-address">127.0.0.1:8003</span></td>
+                                <td><span class="node-status status-offline">Offline</span></td>
+                                <td>0d 0h 0m</td>
+                                <td>0</td>
+                                <td>N/A</td>
+                                <td>
+                                    <div class="node-actions">
+                                        <button class="btn-action btn-view" data-node-id="node-4">View</button>
+                                        <button class="btn-action btn-restart" data-node-id="node-4">Restart</button>
+                                        <button class="btn-action btn-remove" data-node-id="node-4">Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="node-id">node-5</span></td>
+                                <td><span class="node-address">127.0.0.1:8004</span></td>
+                                <td><span class="node-status status-online">Online</span></td>
+                                <td>5d 3h 20m</td>
+                                <td>30</td>
+                                <td>Strong</td>
+                                <td>
+                                    <div class="node-actions">
+                                        <button class="btn-action btn-view" data-node-id="node-5">View</button>
+                                        <button class="btn-action btn-restart" data-node-id="node-5">Restart</button>
+                                        <button class="btn-action btn-remove" data-node-id="node-5">Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Node Details Modal -->
+    <div id="nodeDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Node Details: <span id="modalNodeId">node-1</span></h3>
+                <button class="modal-close" onclick="closeModal('nodeDetailsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="node-details">
+                    <div class="detail-group">
+                        <div class="detail-label">Node ID</div>
+                        <div class="detail-value">node-1</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Address</div>
+                        <div class="detail-value">127.0.0.1:8000</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Public Key</div>
+                        <div class="detail-value">0x8a7d953a2bd9c3b4d5d9c6a21f4f5c7b9e8d7f6a</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">Online</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Uptime</div>
+                        <div class="detail-value">3d 12h 45m</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Version</div>
+                        <div class="detail-value">1.0.0</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Consistency Level</div>
+                        <div class="detail-value">Strong</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Network State</div>
+                        <div class="detail-value">Normal</div>
+                    </div>
+                </div>
+
+                <div class="node-metrics">
+                    <h4 class="metric-title">Node Metrics</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-name">CPU Usage</div>
+                            <div class="metric-value">32%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Memory Usage</div>
+                            <div class="metric-value">1.2 GB</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Disk Usage</div>
+                            <div class="metric-value">8.5 GB</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Network In</div>
+                            <div class="metric-value">2.3 MB/s</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Network Out</div>
+                            <div class="metric-value">1.8 MB/s</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Peers</div>
+                            <div class="metric-value">32</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Blocks</div>
+                            <div class="metric-value">12,345</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-name">Transactions</div>
+                            <div class="metric-value">89,721</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('nodeDetailsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Node Modal -->
+    <div id="addNodeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Node</h3>
+                <button class="modal-close" onclick="closeModal('addNodeModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addNodeForm">
+                    <div class="form-group">
+                        <label for="nodeAddress">Node Address</label>
+                        <input type="text" id="nodeAddress" class="form-control" placeholder="127.0.0.1:8000" required>
+                        <div class="form-helper">Enter the IP address and port of the node (e.g., 127.0.0.1:8000)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nodeType">Node Type</label>
+                        <select id="nodeType" class="form-control">
+                            <option value="validator">Validator Node</option>
+                            <option value="full">Full Node</option>
+                            <option value="light">Light Node</option>
+                        </select>
+                        <div class="form-helper">Select the type of node to add</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="initialState">Initial State</label>
+                        <select id="initialState" class="form-control">
+                            <option value="sync">Start Syncing</option>
+                            <option value="standby">Standby Mode</option>
+                        </select>
+                        <div class="form-helper">Choose the initial state for the node</div>
+                    </div>
+
+                    <div id="addNodeResult" class="add-node-result"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="submitAddNode">Add Node</button>
+                <button class="btn btn-secondary" onclick="closeModal('addNodeModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/blockchain-service.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/responsive.js"></script>
+    <script>
+        // Global state
+        const state = {
+            nodes: [],
+            selectedNode: null
+        };
+
+        // Load network stats
+        async function loadNetworkStats() {
+            try {
+                // Show loading state
+                document.querySelectorAll('.stat-card .card-value').forEach(el => {
+                    el.innerHTML = '<span style="color: #ccc;">Loading...</span>';
+                });
+
+                // Fetch network stats
+                const stats = await API.Nodes.getNetworkStats();
+
+                // Update stats cards
+                document.querySelector('.stat-card:nth-child(1) .card-value').textContent = Utils.formatNumber(stats.totalNodes);
+                document.querySelector('.stat-card:nth-child(2) .card-value').textContent = Utils.formatNumber(stats.activeNodes);
+                document.querySelector('.stat-card:nth-child(3) .card-value').textContent = stats.networkLatency + 'ms';
+                document.querySelector('.stat-card:nth-child(4) .card-value').textContent = Utils.formatNumber(stats.byzantineNodes);
+
+                // Render network map after stats are loaded
+                renderNetworkMap();
+
+            } catch (error) {
+                Utils.showError('Failed to load network stats: ' + error.message);
+                console.error('Network stats loading error:', error);
+            }
+        }
+
+        // Render network map visualization
+        function renderNetworkMap() {
+            try {
+                // Get the map container
+                const mapContainer = document.querySelector('.map-container');
+                if (!mapContainer) {
+                    console.error('Map container not found');
+                    return;
+                }
+
+                // Clear any existing content
+                mapContainer.innerHTML = '';
+
+                // Create SVG element for the network map
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                svg.style.backgroundColor = '#f8f9fa';
+                mapContainer.appendChild(svg);
+
+                // Get nodes data
+                const nodes = state.nodes;
+                if (!nodes || nodes.length === 0) {
+                    mapContainer.innerHTML = '<div class="map-placeholder">No nodes available to display</div>';
+                    return;
+                }
+
+                // Define center point and radius
+                const centerX = mapContainer.clientWidth / 2;
+                const centerY = mapContainer.clientHeight / 2;
+                const radius = Math.min(centerX, centerY) * 0.7;
+
+                // Create central node (representing the main blockchain node)
+                const centralNode = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                centralNode.setAttribute('cx', centerX);
+                centralNode.setAttribute('cy', centerY);
+                centralNode.setAttribute('r', 20);
+                centralNode.setAttribute('fill', '#3a86ff');
+                centralNode.setAttribute('stroke', '#fff');
+                centralNode.setAttribute('stroke-width', '2');
+                svg.appendChild(centralNode);
+
+                // Add label for central node
+                const centralLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                centralLabel.setAttribute('x', centerX);
+                centralLabel.setAttribute('y', centerY + 35);
+                centralLabel.setAttribute('text-anchor', 'middle');
+                centralLabel.setAttribute('fill', '#333');
+                centralLabel.setAttribute('font-size', '12px');
+                centralLabel.textContent = 'Main Node';
+                svg.appendChild(centralLabel);
+
+                // Check if offline nodes should be shown
+                const showOfflineNodes = document.getElementById('showOfflineNodes').checked;
+
+                // Filter nodes based on toggle setting
+                const filteredNodes = showOfflineNodes
+                    ? nodes
+                    : nodes.filter(node => node.status.toLowerCase() !== 'offline');
+
+                if (filteredNodes.length === 0) {
+                    mapContainer.innerHTML = '<div class="map-placeholder">No nodes to display. Try enabling offline nodes.</div>';
+                    return;
+                }
+
+                // Calculate positions for each node in a circle around the center
+                const angleStep = (2 * Math.PI) / filteredNodes.length;
+
+                filteredNodes.forEach((node, index) => {
+                    const angle = index * angleStep;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+
+                    // Determine node color based on status
+                    let nodeColor;
+                    switch (node.status.toLowerCase()) {
+                        case 'online':
+                            nodeColor = '#38b000'; // Green
+                            break;
+                        case 'offline':
+                            nodeColor = '#ff006e'; // Red
+                            break;
+                        case 'syncing':
+                            nodeColor = '#ffbe0b'; // Yellow
+                            break;
+                        default:
+                            nodeColor = '#6c757d'; // Gray
+                    }
+
+                    // Create connection line
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', centerX);
+                    line.setAttribute('y1', centerY);
+                    line.setAttribute('x2', x);
+                    line.setAttribute('y2', y);
+                    line.setAttribute('stroke', '#ccc');
+                    line.setAttribute('stroke-width', '2');
+                    line.setAttribute('stroke-dasharray', node.status.toLowerCase() === 'offline' ? '5,5' : '');
+                    svg.appendChild(line);
+
+                    // Create node circle
+                    const nodeCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    nodeCircle.setAttribute('cx', x);
+                    nodeCircle.setAttribute('cy', y);
+                    nodeCircle.setAttribute('r', 15);
+                    nodeCircle.setAttribute('fill', nodeColor);
+                    nodeCircle.setAttribute('stroke', '#fff');
+                    nodeCircle.setAttribute('stroke-width', '2');
+                    nodeCircle.setAttribute('data-node-id', node.id);
+                    nodeCircle.setAttribute('data-status', node.status.toLowerCase());
+                    nodeCircle.classList.add('node-circle');
+
+                    // Add hover effect and click event
+                    nodeCircle.addEventListener('mouseover', () => {
+                        nodeCircle.setAttribute('r', 18);
+                        nodeCircle.style.cursor = 'pointer';
+                    });
+
+                    nodeCircle.addEventListener('mouseout', () => {
+                        nodeCircle.setAttribute('r', 15);
+                    });
+
+                    nodeCircle.addEventListener('click', () => {
+                        loadNodeDetails(node.id);
+                    });
+
+                    svg.appendChild(nodeCircle);
+
+                    // Add node label
+                    const nodeLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    nodeLabel.setAttribute('x', x);
+                    nodeLabel.setAttribute('y', y + 30);
+                    nodeLabel.setAttribute('text-anchor', 'middle');
+                    nodeLabel.setAttribute('fill', '#333');
+                    nodeLabel.setAttribute('font-size', '12px');
+                    nodeLabel.textContent = node.id;
+                    svg.appendChild(nodeLabel);
+
+                    // Add node type label
+                    const nodeTypeLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    nodeTypeLabel.setAttribute('x', x);
+                    nodeTypeLabel.setAttribute('y', y + 45);
+                    nodeTypeLabel.setAttribute('text-anchor', 'middle');
+                    nodeTypeLabel.setAttribute('fill', '#666');
+                    nodeTypeLabel.setAttribute('font-size', '10px');
+                    nodeTypeLabel.textContent = node.nodeType ? node.nodeType.charAt(0).toUpperCase() + node.nodeType.slice(1) : 'Validator';
+                    svg.appendChild(nodeTypeLabel);
+
+                    // Add status indicator for offline and syncing nodes
+                    if (node.status.toLowerCase() !== 'online') {
+                        const statusLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        statusLabel.setAttribute('x', x);
+                        statusLabel.setAttribute('y', y - 20);
+                        statusLabel.setAttribute('text-anchor', 'middle');
+                        statusLabel.setAttribute('fill', nodeColor);
+                        statusLabel.setAttribute('font-size', '11px');
+                        statusLabel.setAttribute('font-weight', 'bold');
+                        statusLabel.textContent = node.status;
+                        svg.appendChild(statusLabel);
+                    }
+                });
+
+                // Add legend
+                const legendY = mapContainer.clientHeight - 60;
+                const legendX = 20;
+                const legendSpacing = 80;
+
+                // Online node legend
+                const onlineCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                onlineCircle.setAttribute('cx', legendX);
+                onlineCircle.setAttribute('cy', legendY);
+                onlineCircle.setAttribute('r', 8);
+                onlineCircle.setAttribute('fill', '#38b000');
+                svg.appendChild(onlineCircle);
+
+                const onlineText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                onlineText.setAttribute('x', legendX + 15);
+                onlineText.setAttribute('y', legendY + 4);
+                onlineText.setAttribute('fill', '#333');
+                onlineText.setAttribute('font-size', '12px');
+                onlineText.textContent = 'Online';
+                svg.appendChild(onlineText);
+
+                // Syncing node legend
+                const syncingCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                syncingCircle.setAttribute('cx', legendX + legendSpacing);
+                syncingCircle.setAttribute('cy', legendY);
+                syncingCircle.setAttribute('r', 8);
+                syncingCircle.setAttribute('fill', '#ffbe0b');
+                svg.appendChild(syncingCircle);
+
+                const syncingText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                syncingText.setAttribute('x', legendX + legendSpacing + 15);
+                syncingText.setAttribute('y', legendY + 4);
+                syncingText.setAttribute('fill', '#333');
+                syncingText.setAttribute('font-size', '12px');
+                syncingText.textContent = 'Syncing';
+                svg.appendChild(syncingText);
+
+                // Offline node legend
+                const offlineCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                offlineCircle.setAttribute('cx', legendX + legendSpacing * 2);
+                offlineCircle.setAttribute('cy', legendY);
+                offlineCircle.setAttribute('r', 8);
+                offlineCircle.setAttribute('fill', '#ff006e');
+                svg.appendChild(offlineCircle);
+
+                const offlineText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                offlineText.setAttribute('x', legendX + legendSpacing * 2 + 15);
+                offlineText.setAttribute('y', legendY + 4);
+                offlineText.setAttribute('fill', '#333');
+                offlineText.setAttribute('font-size', '12px');
+                offlineText.textContent = 'Offline';
+                svg.appendChild(offlineText);
+
+            } catch (error) {
+                console.error('Error rendering network map:', error);
+                const mapContainer = document.querySelector('.map-container');
+                if (mapContainer) {
+                    mapContainer.innerHTML = '<div class="map-placeholder">Failed to render network map</div>';
+                }
+            }
+        }
+
+        // Load nodes data
+        async function loadNodes() {
+            try {
+                // Show loading state
+                const tableBody = document.querySelector('.nodes-table tbody');
+                Utils.showLoading(tableBody);
+
+                // Fetch nodes
+                state.nodes = await API.Nodes.getNodes();
+
+                // Update table
+                tableBody.innerHTML = '';
+
+                state.nodes.forEach(node => {
+                    const row = document.createElement('tr');
+                    // Determine if offline button should be shown (only for non-offline nodes)
+                    const showOfflineButton = node.status.toLowerCase() !== 'offline';
+
+                    row.innerHTML = `
+                        <td><span class="node-id">${node.id}</span></td>
+                        <td><span class="node-address">${node.address}</span></td>
+                        <td><span class="node-status status-${node.status.toLowerCase()}">${node.status}</span></td>
+                        <td>${Utils.formatUptime(node.uptime)}</td>
+                        <td>${node.peers}</td>
+                        <td>${node.consistencyLevel}</td>
+                        <td>
+                            <div class="node-actions">
+                                <button class="btn-action btn-view" data-node-id="${node.id}">View</button>
+                                ${showOfflineButton ? `<button class="btn-action btn-offline" data-node-id="${node.id}">Set Offline</button>` : ''}
+                                <button class="btn-action btn-restart" data-node-id="${node.id}">Restart</button>
+                                <button class="btn-action btn-remove" data-node-id="${node.id}">Remove</button>
+                            </div>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+                // Add event listeners to buttons
+                document.querySelectorAll('.btn-view').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const nodeId = btn.getAttribute('data-node-id');
+                        loadNodeDetails(nodeId);
+                    });
+                });
+
+                document.querySelectorAll('.btn-offline').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const nodeId = btn.getAttribute('data-node-id');
+                        await setNodeOffline(nodeId);
+                    });
+                });
+
+                document.querySelectorAll('.btn-restart').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const nodeId = btn.getAttribute('data-node-id');
+                        await restartNode(nodeId);
+                    });
+                });
+
+                document.querySelectorAll('.btn-remove').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const nodeId = btn.getAttribute('data-node-id');
+                        await removeNode(nodeId);
+                    });
+                });
+
+                // Render network map after nodes are loaded
+                renderNetworkMap();
+
+            } catch (error) {
+                Utils.showError('Failed to load nodes: ' + error.message);
+                console.error('Nodes loading error:', error);
+            }
+        }
+
+        // Load node details
+        async function loadNodeDetails(nodeId) {
+            try {
+                // Get the node details modal
+                const modal = document.getElementById('nodeDetailsModal');
+                if (!modal) {
+                    throw new Error('Node details modal not found');
+                }
+
+                // Show modal first
+                document.getElementById('modalNodeId').textContent = nodeId;
+                modal.classList.add('show');
+
+                // Get the modal body
+                const modalBody = modal.querySelector('.modal-body');
+                if (!modalBody) {
+                    throw new Error('Modal body not found');
+                }
+
+                // Show loading state
+                Utils.showLoading(modalBody);
+
+                // Fetch node details
+                const node = await API.Nodes.getNode(nodeId);
+                state.selectedNode = node;
+
+                // Clear the modal body and rebuild the structure
+                modalBody.innerHTML = `
+                    <div class="node-details"></div>
+                    <div class="node-metrics">
+                        <h4 class="metric-title">Node Metrics</h4>
+                        <div class="metrics-grid"></div>
+                    </div>
+                `;
+
+                // Now get the newly created elements
+                const nodeDetails = modalBody.querySelector('.node-details');
+                const metricsGrid = modalBody.querySelector('.metrics-grid');
+
+                // Fill node details
+                nodeDetails.innerHTML = `
+                    <div class="detail-group">
+                        <div class="detail-label">Node ID</div>
+                        <div class="detail-value">${node.id}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Address</div>
+                        <div class="detail-value">${node.address}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Public Key</div>
+                        <div class="detail-value">${node.publicKey}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">${node.status}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Uptime</div>
+                        <div class="detail-value">${Utils.formatUptime(node.uptime)}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Version</div>
+                        <div class="detail-value">${node.version}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Node Type</div>
+                        <div class="detail-value">${node.nodeType ? node.nodeType.charAt(0).toUpperCase() + node.nodeType.slice(1) : 'Validator'}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Consistency Level</div>
+                        <div class="detail-value">${node.consistencyLevel}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Network State</div>
+                        <div class="detail-value">${node.networkState}</div>
+                    </div>
+                `;
+
+                // Fill metrics grid
+                metricsGrid.innerHTML = `
+                    <div class="metric-card">
+                        <div class="metric-name">CPU Usage</div>
+                        <div class="metric-value">${node.metrics.cpu}%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Memory Usage</div>
+                        <div class="metric-value">${Utils.formatFileSize(node.metrics.memory)}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Disk Usage</div>
+                        <div class="metric-value">${Utils.formatFileSize(node.metrics.disk)}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Network In</div>
+                        <div class="metric-value">${node.metrics.networkIn} MB/s</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Network Out</div>
+                        <div class="metric-value">${node.metrics.networkOut} MB/s</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Peers</div>
+                        <div class="metric-value">${node.peers}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Blocks</div>
+                        <div class="metric-value">${Utils.formatNumber(node.metrics.blocks)}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-name">Transactions</div>
+                        <div class="metric-value">${Utils.formatNumber(node.metrics.transactions)}</div>
+                    </div>
+                `;
+
+            } catch (error) {
+                Utils.showError('Failed to load node details: ' + error.message);
+                console.error('Node details loading error:', error);
+            }
+        }
+
+        // Close modal by ID
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Restart node
+        async function restartNode(nodeId) {
+            try {
+                if (!confirm(`Are you sure you want to restart node ${nodeId}?`)) {
+                    return;
+                }
+
+                // Show loading state
+                const btn = document.querySelector(`.btn-restart[data-node-id="${nodeId}"]`);
+                const originalText = btn.textContent;
+                btn.textContent = 'Restarting...';
+                btn.disabled = true;
+
+                // Restart node
+                await API.Nodes.restartNode(nodeId);
+
+                // Show success message
+                Utils.showSuccess(`Node ${nodeId} restarted successfully`);
+
+                // Reload nodes
+                await loadNodes();
+
+            } catch (error) {
+                Utils.showError('Failed to restart node: ' + error.message);
+                console.error('Node restart error:', error);
+            } finally {
+                // Reset button
+                const btn = document.querySelector(`.btn-restart[data-node-id="${nodeId}"]`);
+                if (btn) {
+                    btn.textContent = 'Restart';
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        // Set node offline
+        async function setNodeOffline(nodeId) {
+            try {
+                if (!confirm(`Are you sure you want to set node ${nodeId} offline?`)) {
+                    return;
+                }
+
+                // Show loading state
+                const btn = document.querySelector(`.btn-offline[data-node-id="${nodeId}"]`);
+                const originalText = btn.textContent;
+                btn.textContent = 'Setting offline...';
+                btn.disabled = true;
+
+                // Set node offline
+                await API.Nodes.setNodeOffline(nodeId);
+
+                // Show success message
+                Utils.showSuccess(`Node ${nodeId} set offline successfully`);
+
+                // Reload nodes
+                await loadNodes();
+                await loadNetworkStats();
+
+            } catch (error) {
+                Utils.showError('Failed to set node offline: ' + error.message);
+                console.error('Set node offline error:', error);
+            }
+        }
+
+        // Remove node
+        async function removeNode(nodeId) {
+            try {
+                if (!confirm(`Are you sure you want to remove node ${nodeId}? This action cannot be undone.`)) {
+                    return;
+                }
+
+                // Show loading state
+                const btn = document.querySelector(`.btn-remove[data-node-id="${nodeId}"]`);
+                const originalText = btn.textContent;
+                btn.textContent = 'Removing...';
+                btn.disabled = true;
+
+                // Remove node
+                await API.Nodes.removeNode(nodeId);
+
+                // Show success message
+                Utils.showSuccess(`Node ${nodeId} removed successfully`);
+
+                // Reload nodes
+                await loadNodes();
+                await loadNetworkStats();
+
+            } catch (error) {
+                Utils.showError('Failed to remove node: ' + error.message);
+                console.error('Node removal error:', error);
+            }
+        }
+
+        // Show Add Node modal
+        document.querySelector('.btn-add').addEventListener('click', function() {
+            // Reset form
+            document.getElementById('addNodeForm').reset();
+
+            // Clear result container
+            const resultContainer = document.getElementById('addNodeResult');
+            resultContainer.className = 'add-node-result';
+            resultContainer.style.display = 'none';
+
+            // Show modal
+            document.getElementById('addNodeModal').classList.add('show');
+        });
+
+        // Handle Add Node form submission
+        document.getElementById('submitAddNode').addEventListener('click', async function() {
+            // Get form values
+            const nodeAddress = document.getElementById('nodeAddress').value;
+            const nodeType = document.getElementById('nodeType').value;
+            const initialState = document.getElementById('initialState').value;
+
+            // Get result container
+            const resultContainer = document.getElementById('addNodeResult');
+            resultContainer.className = 'add-node-result';
+            resultContainer.style.display = 'none';
+
+            // Validate form
+            if (!nodeAddress) {
+                resultContainer.innerHTML = 'Please enter a node address';
+                resultContainer.className = 'add-node-result error';
+                resultContainer.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Show loading state
+                const btn = document.getElementById('submitAddNode');
+                const originalText = btn.textContent;
+                btn.textContent = 'Adding...';
+                btn.disabled = true;
+
+                // Add node
+                const nodeData = {
+                    address: nodeAddress,
+                    type: nodeType,
+                    initialState: initialState
+                };
+
+                const result = await API.Nodes.addNode(nodeData);
+
+                // Show success message
+                resultContainer.innerHTML = `
+                    <strong>Node Added Successfully!</strong><br>
+                    Node ID: ${result.id}<br>
+                    Address: ${nodeAddress}<br>
+                    Type: ${nodeType}<br>
+                    Initial State: ${initialState === 'sync' ? 'Syncing' : 'Standby'}
+                `;
+                resultContainer.className = 'add-node-result success';
+                resultContainer.style.display = 'block';
+
+                // Reload nodes after a short delay
+                setTimeout(async () => {
+                    await loadNodes();
+                    await loadNetworkStats();
+
+                    // Close modal
+                    closeModal('addNodeModal');
+                }, 2000);
+
+            } catch (error) {
+                // Show error message
+                resultContainer.innerHTML = `
+                    <strong>Failed to Add Node!</strong><br>
+                    Error: ${error.message}
+                `;
+                resultContainer.className = 'add-node-result error';
+                resultContainer.style.display = 'block';
+
+                console.error('Node addition error:', error);
+            } finally {
+                // Reset button
+                const btn = document.getElementById('submitAddNode');
+                btn.textContent = 'Add Node';
+                btn.disabled = false;
+            }
+        });
+
+        // Initialize event listeners for static buttons
+        function initializeStaticButtons() {
+            // Add event listeners to view buttons
+            document.querySelectorAll('.btn-view[data-node-id]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const nodeId = btn.getAttribute('data-node-id');
+                    loadNodeDetails(nodeId);
+                });
+            });
+
+            // Add event listeners to restart buttons
+            document.querySelectorAll('.btn-restart[data-node-id]').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const nodeId = btn.getAttribute('data-node-id');
+                    await restartNode(nodeId);
+                });
+            });
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.btn-remove[data-node-id]').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const nodeId = btn.getAttribute('data-node-id');
+                    await removeNode(nodeId);
+                });
+            });
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize static buttons
+                initializeStaticButtons();
+
+                // Add event listener for the offline nodes toggle
+                document.getElementById('showOfflineNodes').addEventListener('change', function() {
+                    // Re-render the network map when the toggle changes
+                    renderNetworkMap();
+                });
+
+                // Check node status
+                const status = await API.Status.getStatus();
+
+                if (status.status === 'running') {
+                    // Load network stats
+                    await loadNetworkStats();
+
+                    // Load nodes
+                    await loadNodes();
+                } else {
+                    Utils.showError('Blockchain node is not running. Status: ' + status.status);
+                }
+            } catch (error) {
+                Utils.showError('Failed to connect to blockchain node. Please make sure the node is running.');
+                console.error('Status check error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

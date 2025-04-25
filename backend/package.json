@@ -1,0 +1,13 @@
+{
+  "name": "blockchain-backend",
+  "version": "1.0.0",
+  "description": "Mock backend for Advanced Blockchain project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
