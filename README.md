@@ -1,4 +1,4 @@
-# Adaptive Merkle Forest (AMF) Blockchain Simulation
+# AdaptiveChain-Go
 
 A sophisticated blockchain system in Go that demonstrates advanced state verification, dynamic sharding, and Merkle proof verification through an interactive web interface.
 
